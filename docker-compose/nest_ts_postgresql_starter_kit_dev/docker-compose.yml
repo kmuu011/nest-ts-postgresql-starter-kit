@@ -1,0 +1,44 @@
+services:
+  nginx:
+    container_name: "dev_nginx"
+    image: nginx:1.25.2-alpine
+    ports: [ "8100:8100" ]
+    volumes:
+      - ./nginx.conf:/etc/nginx/nginx.conf:ro
+    restart: unless-stopped
+    networks:
+      static-network:
+        ipv4_address: 172.24.0.2
+
+  redis:
+    container_name: "dev_redis"
+    ports: [ "6379:6379" ]
+    image: "redis"
+    restart: unless-stopped
+    networks:
+      static-network:
+        ipv4_address: 172.24.0.3
+
+  postgresql:
+    container_name: "dev_postgresql"
+    image: postgres:15-alpine
+    ports: [ "5432:5432" ]
+    volumes:
+      - postgresql-data:/var/lib/postgresql/data:Z
+    environment:
+      POSTGRES_USER: dev
+      POSTGRES_PASSWORD: root
+      POSTGRES_DB: my_db
+    restart: unless-stopped
+    networks:
+      static-network:
+        ipv4_address: 172.24.0.4
+
+volumes:
+  postgresql-data:
+
+networks:
+  static-network:
+    ipam:
+      config:
+        - subnet: 172.24.0.0/16
