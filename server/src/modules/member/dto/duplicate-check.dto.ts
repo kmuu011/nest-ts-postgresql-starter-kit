@@ -1,5 +1,5 @@
-import {IsIn, IsNotEmpty, IsString} from "class-validator";
-import {duplicateCheckType} from "../member.type";
+import { IsIn, IsNotEmpty, IsString } from "class-validator";
+import { duplicateCheckType } from "../member.type";
 import type { DuplicateCheckKey } from '../member.type';
 
 

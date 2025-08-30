@@ -1,6 +1,6 @@
-import {Injectable} from "@nestjs/common";
-import {CacheService} from "../cache/cache.service";
-import {config} from "../../config";
+import { Injectable } from "@nestjs/common";
+import { CacheService } from "../cache/cache.service";
+import { config } from "../../config";
 
 @Injectable()
 export class SessionService {
@@ -20,7 +20,11 @@ export class SessionService {
       userAgent
     };
 
-    await this.cacheService.set(sessionId, sessionData, config.memberAuth.session.expireTime);
+    await this.cacheService.set(
+      sessionId,
+      sessionData,
+      config.memberAuth.session.expireTime
+    );
 
     return sessionId;
   }

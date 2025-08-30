@@ -1,4 +1,4 @@
-import {AnyObject} from "../types/common";
+import { AnyObject } from "../types/common";
 
 interface KeyDescriptionObj {
   [key: string]: any;

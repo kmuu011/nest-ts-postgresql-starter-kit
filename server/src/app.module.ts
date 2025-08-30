@@ -1,10 +1,13 @@
-import {Global, MiddlewareConsumer, Module, NestModule} from '@nestjs/common';
-import {MemberModule} from "./modules/member/member.module";
-import {PrismaService} from "./common/prisma/prisma.service";
-import {CacheModule} from "@nestjs/cache-manager";
-import {CacheService} from "./common/cache/cache.service";
-import {createKeyv } from '@keyv/redis';
-import {config} from "./config";
+import { Global, MiddlewareConsumer, Module, NestModule } from '@nestjs/common';
+import { MemberModule } from "./modules/member/member.module";
+import { PrismaService } from "./common/prisma/prisma.service";
+import { CacheModule } from "@nestjs/cache-manager";
+import { CacheService } from "./common/cache/cache.service";
+import { createKeyv } from '@keyv/redis';
+import { config } from "./config";
+import { MemoModule } from './modules/memo/memo.module';
+import { SessionService } from './common/session/session.service';
+import { MemberRepository } from './modules/member/member.repository';
 
 const moduleMetaData = {
   imports: [
@@ -18,14 +21,19 @@ const moduleMetaData = {
     }),
 
     MemberModule,
+    MemoModule,
   ],
   providers: [
     PrismaService,
     CacheService,
+    SessionService,
+    MemberRepository
   ],
   exports: [
     PrismaService,
     CacheService,
+    SessionService,
+    MemberRepository
   ],
 }
 

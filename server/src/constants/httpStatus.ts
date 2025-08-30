@@ -11,4 +11,4 @@ const httpStatus = {
   CUSTOM_ERROR: 2000,
 }
 
-export {httpStatus};
+export { httpStatus };

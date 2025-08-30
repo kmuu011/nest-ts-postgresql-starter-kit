@@ -1,13 +1,13 @@
-import {CanActivate, ExecutionContext, Injectable} from "@nestjs/common";
-import {SessionService} from "../common/session/session.service";
-import {MemberRepository} from "../modules/member/member.repository";
-import {Request, Response} from "express";
-import {SESSION_ID_KEY} from "../constants/session";
-import {Message} from "../utils/MessageUtility";
-import {Utility} from "../utils/Utility";
-import {CacheService} from "../common/cache/cache.service";
-import {config} from "../config";
-import {CookieUtility} from "../utils/CookieUtility";
+import { CanActivate, ExecutionContext, Injectable } from "@nestjs/common";
+import { SessionService } from "../common/session/session.service";
+import { MemberRepository } from "../modules/member/member.repository";
+import { Request, Response } from "express";
+import { SESSION_ID_KEY } from "../constants/session";
+import { Message } from "../utils/MessageUtility";
+import { Utility } from "../utils/Utility";
+import { CacheService } from "../common/cache/cache.service";
+import { config } from "../config";
+import { CookieUtility } from "../utils/CookieUtility";
 
 @Injectable()
 export class AuthGuard implements CanActivate {

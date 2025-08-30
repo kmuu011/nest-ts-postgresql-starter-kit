@@ -1,6 +1,6 @@
-import {config} from "../config";
-import {Response} from "express";
-import {SESSION_ID_KEY} from "../constants/session";
+import { config } from "../config";
+import { Response } from "express";
+import { SESSION_ID_KEY } from "../constants/session";
 
 export class CookieUtility {
   static setSessionId(

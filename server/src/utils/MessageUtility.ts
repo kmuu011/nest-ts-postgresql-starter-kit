@@ -1,5 +1,5 @@
-import {httpStatus} from "../constants/httpStatus";
-import {descriptionToKeyObj} from "../constants/keyDescriptionObj";
+import { httpStatus } from "../constants/httpStatus";
+import { descriptionToKeyObj } from "../constants/keyDescriptionObj";
 
 interface ErrorOptions {
   statusCode: number;
@@ -180,4 +180,4 @@ class Message extends Error {
   }
 }
 
-export {Message};
+export { Message };

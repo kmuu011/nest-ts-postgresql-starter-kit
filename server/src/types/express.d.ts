@@ -1,9 +1,10 @@
-import {Member} from "@prisma/client";
+import { Member } from "@prisma/client";
 
 declare module "express-serve-static-core" {
   interface Request {
-    memberInfo?: Omit<Member, "password"> | null
+    memberInfo?: Omit<Member, "password"> | null,
+    memoInfo?: Memo | null
   }
 }
 
-export {};
+export { };

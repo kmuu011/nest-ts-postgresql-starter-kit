@@ -1,16 +1,16 @@
-import {Injectable} from "@nestjs/common";
-import {MemberRepository} from "./member.repository";
-import {SignupDto} from "./dto/signup.dto";
-import {Message} from "../../utils/MessageUtility";
-import {keyDescriptionObj} from "../../constants/keyDescriptionObj";
-import {DuplicateCheckKey} from "./member.type";
-import {EncryptUtility} from "../../utils/EncryptUtility";
-import {LoginDto} from "./dto/login.dto";
-import {Member} from "@prisma/client";
-import {Utility} from "../../utils/Utility";
-import type {Request, Response} from "express";
-import {SessionService} from "../../common/session/session.service";
-import {CookieUtility} from "../../utils/CookieUtility";
+import { Injectable } from "@nestjs/common";
+import { MemberRepository } from "./member.repository";
+import { SignupDto } from "./dto/signup.dto";
+import { Message } from "../../utils/MessageUtility";
+import { keyDescriptionObj } from "../../constants/keyDescriptionObj";
+import { DuplicateCheckKey } from "./member.type";
+import { EncryptUtility } from "../../utils/EncryptUtility";
+import { LoginDto } from "./dto/login.dto";
+import { Member } from "@prisma/client";
+import { Utility } from "../../utils/Utility";
+import type { Request, Response } from "express";
+import { SessionService } from "../../common/session/session.service";
+import { CookieUtility } from "../../utils/CookieUtility";
 
 @Injectable()
 export class MemberService {

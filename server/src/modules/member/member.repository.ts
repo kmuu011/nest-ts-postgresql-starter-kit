@@ -1,6 +1,6 @@
-import {Injectable} from "@nestjs/common";
-import {PrismaService} from "../../common/prisma/prisma.service";
-import {Member, Prisma} from "@prisma/client";
+import { Injectable } from "@nestjs/common";
+import { PrismaService } from "../../common/prisma/prisma.service";
+import { Member, Prisma } from "@prisma/client";
 
 @Injectable()
 export class MemberRepository {
@@ -47,7 +47,7 @@ export class MemberRepository {
     where: Prisma.MemberWhereUniqueInput;
     data: Prisma.MemberUpdateInput;
   }): Promise<Member> {
-    const {where, data} = params;
+    const { where, data } = params;
 
     return this.prisma.member.update({
       data,

@@ -1,11 +1,11 @@
-import {Body, Controller, Get, Post, Query, Req, Res, UseGuards} from "@nestjs/common";
-import {MemberService} from "./member.service";
-import {LoginDto} from "./dto/login.dto";
-import {SignupDto} from "./dto/signup.dto";
-import {BaseController} from "../../common/base/base.controller";
-import type {Request, Response} from "express";
-import {AuthGuard} from "../../guard/auth.guard";
-import {DuplicateCheckDto} from "./dto/duplicate-check.dto";
+import { Body, Controller, Get, Post, Query, Req, Res, UseGuards } from "@nestjs/common";
+import { MemberService } from "./member.service";
+import { LoginDto } from "./dto/login.dto";
+import { SignupDto } from "./dto/signup.dto";
+import { BaseController } from "../../common/base/base.controller";
+import type { Request, Response } from "express";
+import { AuthGuard } from "../../guard/auth.guard";
+import { DuplicateCheckDto } from "./dto/duplicate-check.dto";
 
 @Controller("member")
 export class MemberController extends BaseController {
@@ -19,7 +19,7 @@ export class MemberController extends BaseController {
   async login(
     @Body() loginDto: LoginDto,
     @Req() req: Request,
-    @Res({passthrough: true}) res: Response,
+    @Res({ passthrough: true }) res: Response,
   ) {
     const sessionId = await this.memberService.login(
       loginDto,
@@ -27,7 +27,7 @@ export class MemberController extends BaseController {
       res,
     );
 
-    return {sessionId};
+    return { sessionId };
   }
 
   @Post("/signup")
@@ -41,14 +41,14 @@ export class MemberController extends BaseController {
 
   @Get("/duplicateCheck")
   async duplicateCheck(
-    @Query() {key, value}: DuplicateCheckDto
+    @Query() { key, value }: DuplicateCheckDto
   ) {
     const isDuplicated = !!(await this.memberService.duplicateCheck(
       key,
       value
     ));
 
-    return {isDuplicated};
+    return { isDuplicated };
   }
 
   @UseGuards(AuthGuard)
