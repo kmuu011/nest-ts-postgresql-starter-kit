@@ -18,7 +18,7 @@ model Member {
 
 model Memo {
   idx       Int      @id @default(autoincrement())
-  memo      String   @db.VarChar(100)
+  memo      String   @db.VarChar(2000)
   member    Member   @relation(fields: [memberIdx], references: [idx])
   memberIdx Int
   createdAt DateTime @default(now())

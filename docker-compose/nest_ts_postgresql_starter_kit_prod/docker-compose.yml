@@ -1,6 +1,6 @@
 services:
   nginx:
-    container_name: "dev_nginx"
+    container_name: "prod_nginx"
     image: nginx:1.25.2-alpine
     ports: [ "8100:8100" ]
     volumes:
@@ -8,19 +8,19 @@ services:
     restart: unless-stopped
     networks:
       static-network:
-        ipv4_address: 172.24.0.2
+        ipv4_address: 172.25.0.2
 
   redis:
-    container_name: "dev_redis"
+    container_name: "prod_redis"
     ports: [ "6379:6379" ]
     image: "redis"
     restart: unless-stopped
     networks:
       static-network:
-        ipv4_address: 172.24.0.3
+        ipv4_address: 172.25.0.3
 
   postgresql:
-    container_name: "dev_postgresql"
+    container_name: "prod_postgresql"
     image: postgres:15-alpine
     ports: [ "5432:5432" ]
     volumes:
@@ -32,7 +32,25 @@ services:
     restart: unless-stopped
     networks:
       static-network:
-        ipv4_address: 172.24.0.4
+        ipv4_address: 172.25.0.4
+
+  node_0:
+    container_name: "prod_node_0"
+    image: production/nest-ts-postgre:latest
+    ports: [ "8200:8200" ]
+    restart: unless-stopped
+    networks:
+      static-network:
+        ipv4_address: 172.25.0.5
+
+  node_1:
+    container_name: "prod_node_1"
+    image: production/nest-ts-postgre:latest
+    ports: [ "8201:8200" ]
+    restart: unless-stopped
+    networks:
+      static-network:
+        ipv4_address: 172.25.0.6
 
 volumes:
   postgresql-data:
@@ -41,4 +59,4 @@ networks:
   static-network:
     ipam:
       config:
-        - subnet: 172.24.0.0/16
+        - subnet: 172.25.0.0/16
