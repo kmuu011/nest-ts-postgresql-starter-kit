@@ -10,5 +10,5 @@ if "%NAME%"=="" (
 cd ..
 cd server
 
-npx prisma migrate dev --name %NAME% & pause
+npx dotenv -e .env.dev -- npx prisma migrate dev --name %NAME% & pause
 npx prisma generate & pause

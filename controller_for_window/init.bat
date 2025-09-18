@@ -1,4 +1,4 @@
 cd ..
 cd server
 
-npm ci && npm i -g win-node-env
+npm ci && npm i -g dotenv

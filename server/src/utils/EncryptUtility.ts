@@ -3,7 +3,7 @@ import { config } from "../config";
 
 export class EncryptUtility {
   static encryptMemberPassword(password: string): string {
-    return createHash(config.memberAuth.password.hashAlgorithm)
+    return createHash(config.memberAuth.password.hashAlgorithm ?? "sha512")
       .update(password + config.memberAuth.password.salt)
       .digest("hex");
   }

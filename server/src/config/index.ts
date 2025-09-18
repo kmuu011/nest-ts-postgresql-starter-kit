@@ -1,4 +1,25 @@
 import * as process from "node:process";
+import * as path from "node:path";
+import * as fs from "node:fs";
+
+const loadEnvFiles = () => {
+  const nodeEnv = process.env.NODE_ENV || 'dev';
+  const envDir = path.join(__dirname, '../../../');
+
+  const envFiles = [
+    path.join(envDir, '.env'),
+    path.join(envDir, `.env.${nodeEnv}`),
+  ];
+
+  envFiles.forEach(envFile => {
+    if (fs.existsSync(envFile)) {
+      console.log(`Loading environment file: ${envFile}`);
+      require('dotenv').config({ path: envFile });
+    }
+  });
+};
+
+loadEnvFiles();
 
 const envConfig = process.env;
 
@@ -7,8 +28,8 @@ const config = {
 
   memberAuth: {
     password: {
-      salt: 'thisIsSalt',
-      hashAlgorithm: 'sha512',
+      salt: envConfig.PASSWORD_SALT,
+      hashAlgorithm: envConfig.PASSWORD_HASH_ALGORITHM,
     },
     session: {
       expireTime: 60 * 60 * 24 * 30,
