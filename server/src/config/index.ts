@@ -33,7 +33,7 @@ const config = {
     },
     session: {
       expireTime: 60 * 60 * 24 * 30,
-      refreshTime: 60 * 60 * 24 * 30 - 10
+      refreshTime: 60 * 60 * 24 * 29
     }
   },
 

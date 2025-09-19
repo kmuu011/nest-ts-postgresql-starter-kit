@@ -9,6 +9,9 @@ timeout /t 2 /nobreak >NUL
 cd ..
 cd ..
 cd controller_for_window
+call init.bat && ^
+cd .. && ^
+cd controller_for_window && ^
 call prod-prisma-deploy.bat && ^
 cd .. && ^
 cd controller_for_window && ^
