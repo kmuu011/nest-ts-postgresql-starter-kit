@@ -21,7 +21,9 @@ services:
 
   postgresql:
     container_name: "prod_postgresql"
-    image: postgres:15-alpine
+    build:
+      context: ./docker_file/postgre
+      dockerfile: Dockerfile
     ports: [ "5432:5432" ]
     volumes:
       - postgresql-data:/var/lib/postgresql/data:Z

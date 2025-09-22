@@ -22,24 +22,44 @@ export class MemoRepository {
   }
 
   async selectList(
-    where?: Prisma.MemoWhereInput,
+    memberIdx: number,
+    searchKeywordList: string[],
     skip?: number,
     take?: number
   ): Promise<Memo[]> {
-    return this.prisma.memo.findMany({
-      where,
-      orderBy: {
-        idx: 'desc',
-      },
-      skip,
-      take,
-    });
+    const sql = Prisma.sql`
+      SELECT * 
+      FROM "Memo"
+      WHERE "memberIdx" = ${memberIdx}
+      ${searchKeywordList?.length > 0
+        ? Prisma.sql`AND (${Prisma.join(searchKeywordList.map((kw) => Prisma.sql`"memo" &@ ${kw}`), ` AND `)})`
+        : Prisma.sql``
+      }
+
+      ORDER BY "idx" DESC
+      LIMIT ${take}
+      OFFSET ${skip}
+    `;
+
+    return (await this.prisma.$queryRaw(sql)) as Memo[];
   }
 
-  async selectCount(where?: Prisma.MemoWhereInput): Promise<number> {
-    return this.prisma.memo.count({
-      where,
-    });
+  async selectCount(
+    memberIdx: number,
+    searchKeywordList: string[],
+  ): Promise<number> {
+    const sql = Prisma.sql`
+      SELECT LEAST(COUNT(*), 2147483647)::int AS "totalCount"
+      FROM "Memo"
+      WHERE "memberIdx" = ${memberIdx}
+      ${searchKeywordList?.length > 0
+        ? Prisma.sql`AND (${Prisma.join(searchKeywordList.map((kw) => Prisma.sql`"memo" &@ ${kw}`), ` AND `)})`
+        : Prisma.sql``
+      }
+    `;
+
+    const totalCountResult = await this.prisma.$queryRaw(sql) as any[];
+    return totalCountResult[0].totalCount;
   }
 
   async update(params: {

@@ -1,2 +1,2 @@
 -- AlterTable
-ALTER TABLE "public"."Memo" ALTER COLUMN "memo" SET DATA TYPE VARCHAR(2000);
+ALTER TABLE "public"."Memo" ALTER COLUMN "memo" SET DATA TYPE TEXT;

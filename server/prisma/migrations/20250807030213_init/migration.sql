@@ -14,7 +14,7 @@ CREATE TABLE "public"."Member" (
 -- CreateTable
 CREATE TABLE "public"."Memo" (
     "idx" SERIAL NOT NULL,
-    "memo" VARCHAR(100) NOT NULL,
+    "memo" TEXT NOT NULL,
     "memberIdx" INTEGER NOT NULL,
     "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
     "updatedAt" TIMESTAMP(3) NOT NULL,

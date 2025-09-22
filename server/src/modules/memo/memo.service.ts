@@ -21,22 +21,26 @@ export class MemoService extends BaseService {
     count: number,
     search: string
   ): Promise<PaginatedServiceData<Memo>> {
-    const where: Prisma.MemoWhereInput = {
-      member: {
-        idx: memberIdx
-      },
-      memo: {
-        contains: search,
-        mode: 'insensitive'
-      }
-    };
+    let searchKeywordList: string[] = [];
+
+    if (search) {
+      searchKeywordList = search
+        .trim()
+        .split(' ')
+        .filter(keyword => keyword !== '');
+    }
 
     const memoList = await this.memoRepository.selectList(
-      where,
+      memberIdx,
+      searchKeywordList,
       (page - 1) * count,
       count
     );
-    const memoCount = await this.memoRepository.selectCount(where);
+
+    const memoCount = await this.memoRepository.selectCount(
+      memberIdx,
+      searchKeywordList
+    );
 
     return this.returnListType({
       itemList: memoList,
