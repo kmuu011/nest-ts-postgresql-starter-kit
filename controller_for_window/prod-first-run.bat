@@ -1,6 +1,6 @@
 cd ..
 cd docker-compose
-cd nest_ts_postgresql_starter_kit_prod
+cd prod
 
 docker compose up postgresql -d
 
@@ -17,5 +17,5 @@ cd .. && ^
 cd controller_for_window && ^
 call prod-build-server-image.bat && ^
 cd docker-compose && ^
-cd nest_ts_postgresql_starter_kit_prod && ^
+cd prod && ^
 docker compose up -d && pause

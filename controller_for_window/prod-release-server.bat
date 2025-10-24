@@ -1,6 +1,6 @@
 cd ..
 cd docker-compose
-cd nest_ts_postgresql_starter_kit_prod
+cd prod
 
 docker compose stop node_0
 docker compose rm -f node_0

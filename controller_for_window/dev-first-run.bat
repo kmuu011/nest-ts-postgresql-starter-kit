@@ -1,6 +1,6 @@
 cd ..
 cd docker-compose
-cd nest_ts_postgresql_starter_kit_dev
+cd dev
 
 docker compose up postgresql -d
 
@@ -15,5 +15,5 @@ cd controller_for_window && ^
 call dev-prisma-deploy.bat && ^
 cd .. && ^
 cd docker-compose && ^
-cd nest_ts_postgresql_starter_kit_dev && ^
+cd dev && ^
 docker compose up -d && pause

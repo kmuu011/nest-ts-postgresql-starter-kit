@@ -8,7 +8,7 @@ services:
     restart: unless-stopped
     networks:
       static-network:
-        ipv4_address: 172.24.0.2
+        ipv4_address: 172.27.0.2
 
   redis:
     container_name: "dev_redis"
@@ -17,7 +17,7 @@ services:
     restart: unless-stopped
     networks:
       static-network:
-        ipv4_address: 172.24.0.3
+        ipv4_address: 172.27.0.3
 
   postgresql:
     container_name: "dev_postgresql"
@@ -34,7 +34,7 @@ services:
     restart: unless-stopped
     networks:
       static-network:
-        ipv4_address: 172.24.0.4
+        ipv4_address: 172.27.0.4
 
 volumes:
   postgresql-data:
@@ -43,4 +43,4 @@ networks:
   static-network:
     ipam:
       config:
-        - subnet: 172.24.0.0/16
+        - subnet: 172.27.0.0/16
