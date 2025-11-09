@@ -11,12 +11,15 @@ import { Utility } from "../../utils/Utility";
 import type { Request, Response } from "express";
 import { SessionService } from "../../common/session/session.service";
 import { CookieUtility } from "../../utils/CookieUtility";
+import { Transactional } from "../../common/prisma/transactional.decorator";
+import { PrismaService } from "../../common/prisma/prisma.service";
 
 @Injectable()
 export class MemberService {
   constructor(
     private readonly memberRepository: MemberRepository,
     private readonly sessionService: SessionService,
+    private readonly prisma: PrismaService,
   ) {
   }
 
@@ -56,9 +59,9 @@ export class MemberService {
     });
   }
 
-
+  @Transactional()
   async signUp(
-    signupDto: SignupDto
+    signupDto: SignupDto,
   ): Promise<void> {
     if (await this.duplicateCheck("id", signupDto.id)) {
       throw Message.ALREADY_EXIST(keyDescriptionObj.id);
@@ -66,6 +69,13 @@ export class MemberService {
 
     signupDto.password = EncryptUtility.encryptMemberPassword(signupDto.password);
 
-    await this.memberRepository.createMember(signupDto);
+    const member = await this.memberRepository.createMember(signupDto);
+
+    await this.prisma.db.memo.create({
+      data: {
+        memo: "테스트 메모 입니다.",
+        memberIdx: member.idx,
+      },
+    });
   }
 }

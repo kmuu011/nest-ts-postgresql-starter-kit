@@ -5,6 +5,7 @@ import { ValidationPipe } from "@nestjs/common";
 import cookieParser from "cookie-parser";
 import { OutOfControlExceptionFilter } from './common/filter/exception.filter';
 import { ControllableExceptionFilter } from './common/filter/exception.filter';
+import { NEW_SESSION_KEY, SESSION_KEY } from './constants/session';
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
@@ -17,7 +18,7 @@ async function bootstrap() {
     credentials: true, // 쿠키/인증정보 허용 시 필요
     methods: ['DELETE', 'GET', 'POST', 'PATCH', 'OPTIONS'],
     allowedHeaders: [
-      'session-key',
+      SESSION_KEY,
       'user-agent',
       'x-forwarded-for',
       'Content-Type',
@@ -28,7 +29,7 @@ async function bootstrap() {
       'Cookie',
     ],
     exposedHeaders: [
-      'new-session-key',
+      NEW_SESSION_KEY,
     ],
   });
 

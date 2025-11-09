@@ -8,9 +8,9 @@ export class MemberRepository {
   }
 
   async selectByUnique(
-    where: Prisma.MemberWhereUniqueInput
+    where: Prisma.MemberWhereUniqueInput,
   ): Promise<Omit<Member, "password"> | null> {
-    return this.prisma.member.findUnique({
+    return this.prisma.db.member.findUnique({
       where,
       select: {
         password: false,
@@ -23,9 +23,9 @@ export class MemberRepository {
   }
 
   async selectOne(
-    where: Prisma.MemberWhereInput
+    where: Prisma.MemberWhereInput,
   ): Promise<Omit<Member, "password"> | null> {
-    return this.prisma.member.findFirst({
+    return this.prisma.db.member.findFirst({
       where,
       select: {
         password: false,
@@ -37,8 +37,10 @@ export class MemberRepository {
     });
   }
 
-  async createMember(data: Prisma.MemberCreateInput): Promise<Member> {
-    return this.prisma.member.create({
+  async createMember(
+    data: Prisma.MemberCreateInput,
+  ): Promise<Member> {
+    return this.prisma.db.member.create({
       data,
     });
   }
@@ -48,15 +50,16 @@ export class MemberRepository {
     data: Prisma.MemberUpdateInput;
   }): Promise<Member> {
     const { where, data } = params;
-
-    return this.prisma.member.update({
+    return this.prisma.db.member.update({
       data,
       where,
     });
   }
 
-  async deleteMember(where: Prisma.MemberWhereUniqueInput): Promise<Member> {
-    return this.prisma.member.delete({
+  async deleteMember(
+    where: Prisma.MemberWhereUniqueInput,
+  ): Promise<Member> {
+    return this.prisma.db.member.delete({
       where,
     });
   }

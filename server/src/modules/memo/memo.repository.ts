@@ -7,7 +7,7 @@ export class MemoRepository {
   constructor(private prisma: PrismaService) { }
 
   async create(data: Prisma.MemoCreateInput): Promise<Memo> {
-    return this.prisma.memo.create({
+    return this.prisma.db.memo.create({
       data,
     });
   }
@@ -16,7 +16,7 @@ export class MemoRepository {
     memberIdx: number,
     idx: number
   ): Promise<Memo | null> {
-    return this.prisma.memo.findUnique({
+    return this.prisma.db.memo.findUnique({
       where: { memberIdx, idx },
     });
   }
@@ -41,7 +41,7 @@ export class MemoRepository {
       OFFSET ${skip}
     `;
 
-    return (await this.prisma.$queryRaw(sql)) as Memo[];
+    return (await this.prisma.db.$queryRaw(sql)) as Memo[];
   }
 
   async selectCount(
@@ -58,7 +58,7 @@ export class MemoRepository {
       }
     `;
 
-    const totalCountResult = await this.prisma.$queryRaw(sql) as any[];
+    const totalCountResult = await this.prisma.db.$queryRaw(sql) as any[];
     return totalCountResult[0].totalCount;
   }
 
@@ -67,14 +67,14 @@ export class MemoRepository {
     data: Prisma.MemoUpdateInput;
   }): Promise<Memo> {
     const { where, data } = params;
-    return this.prisma.memo.update({
+    return this.prisma.db.memo.update({
       where,
       data,
     });
   }
 
   async delete(where: Prisma.MemoWhereUniqueInput): Promise<Memo> {
-    return this.prisma.memo.delete({
+    return this.prisma.db.memo.delete({
       where,
     });
   }
