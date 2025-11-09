@@ -1,3 +1,4 @@
+import { HttpException } from "@nestjs/common";
 import { httpStatus } from "../constants/httpStatus";
 import { descriptionToKeyObj } from "../constants/keyDescriptionObj";
 
@@ -7,12 +8,19 @@ interface ErrorOptions {
   message: string;
 }
 
-class Message extends Error {
+class Message extends HttpException {
   statusCode: number;
   error: string;
 
   constructor(errOptions: ErrorOptions) {
-    super(errOptions.message);
+    super(
+      {
+        statusCode: errOptions.statusCode,
+        error: errOptions.error,
+        message: errOptions.message
+      },
+      errOptions.statusCode
+    );
 
     this.statusCode = errOptions.statusCode;
     this.error = errOptions.error;

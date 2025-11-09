@@ -32,19 +32,19 @@ export class MemberService {
     );
 
     if (!memberInfo) {
-      throw Message.UNAUTHORIZED;
+      throw Message.NOT_EXIST(keyDescriptionObj.member);
     }
 
     const clientInfo = Utility.getClientInfo(req);
 
-    const sessionId = await this.sessionService.create(
+    const sessionKey = await this.sessionService.create(
       memberInfo.idx,
       clientInfo.userAgent
     )
 
-    CookieUtility.setSessionId(res, sessionId);
+    CookieUtility.setSessionKey(res, sessionKey);
 
-    return sessionId;
+    return sessionKey;
   }
 
   async duplicateCheck(

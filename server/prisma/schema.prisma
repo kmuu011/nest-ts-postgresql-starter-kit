@@ -11,18 +11,35 @@ model Member {
   idx       Int      @id @default(autoincrement())
   id        String   @unique @db.VarChar(30)
   password  String   @db.VarChar(200)
-  memos     Memo[]
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
+
+  memos     Memo[]
+  files     File[]
 }
 
 model Memo {
   idx       Int      @id @default(autoincrement())
   memo      String
-  member    Member   @relation(fields: [memberIdx], references: [idx])
   memberIdx Int
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
+
+  member    Member   @relation(fields: [memberIdx], references: [idx], onDelete: Cascade)
+
+  @@index([memberIdx])
+}
+
+model File {
+  idx       Int      @id @default(autoincrement())
+  memberIdx Int
+  fileKey   String   @db.Text()
+  fileName  String   @db.VarChar(45)
+  fileType  String   @db.VarChar(15)
+  fileSize  BigInt
+  createdAt DateTime @default(now())
+
+  member    Member   @relation(fields: [memberIdx], references: [idx], onDelete: Cascade)
 
   @@index([memberIdx])
 }

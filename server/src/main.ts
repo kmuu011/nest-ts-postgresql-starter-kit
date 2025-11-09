@@ -17,7 +17,7 @@ async function bootstrap() {
     credentials: true, // 쿠키/인증정보 허용 시 필요
     methods: ['DELETE', 'GET', 'POST', 'PATCH', 'OPTIONS'],
     allowedHeaders: [
-      'sessionId',
+      'session-key',
       'user-agent',
       'x-forwarded-for',
       'Content-Type',
@@ -28,7 +28,7 @@ async function bootstrap() {
       'Cookie',
     ],
     exposedHeaders: [
-      'newSessionId',
+      'new-session-key',
     ],
   });
 

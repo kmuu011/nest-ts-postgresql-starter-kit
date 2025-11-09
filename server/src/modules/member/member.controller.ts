@@ -21,13 +21,13 @@ export class MemberController extends BaseController {
     @Req() req: Request,
     @Res({ passthrough: true }) res: Response,
   ) {
-    const sessionId = await this.memberService.login(
+    const sessionKey = await this.memberService.login(
       loginDto,
       req,
       res,
     );
 
-    return { sessionId };
+    return { sessionKey };
   }
 
   @Post("/signup")

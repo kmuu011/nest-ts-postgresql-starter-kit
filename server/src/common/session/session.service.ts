@@ -13,7 +13,7 @@ export class SessionService {
     memberIdx: number,
     userAgent: string
   ) {
-    const sessionId = await this.cacheService.getUnqKey(43);
+    const sessionKey = await this.cacheService.getUnqKey(43);
 
     const sessionData = {
       memberIdx,
@@ -21,20 +21,20 @@ export class SessionService {
     };
 
     await this.cacheService.set(
-      sessionId,
+      sessionKey,
       sessionData,
       config.memberAuth.session.expireTime
     );
 
-    return sessionId;
+    return sessionKey;
   }
 
   async get(
-    sessionId: string
+    sessionKey: string
   ) {
     return {
-      ...(await this.cacheService.get(sessionId)),
-      ttl: await this.cacheService.ttl(sessionId)
+      ...(await this.cacheService.get(sessionKey)),
+      ttl: await this.cacheService.ttl(sessionKey)
     };
   }
 }

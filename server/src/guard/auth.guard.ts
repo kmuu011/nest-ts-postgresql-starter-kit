@@ -2,7 +2,7 @@ import { CanActivate, ExecutionContext, Injectable } from "@nestjs/common";
 import { SessionService } from "../common/session/session.service";
 import { MemberRepository } from "../modules/member/member.repository";
 import { Request, Response } from "express";
-import { SESSION_ID_KEY } from "../constants/session";
+import { NEW_SESSION_KEY, SESSION_KEY } from "../constants/session";
 import { Message } from "../utils/MessageUtility";
 import { Utility } from "../utils/Utility";
 import { CacheService } from "../common/cache/cache.service";
@@ -24,10 +24,11 @@ export class AuthGuard implements CanActivate {
     const req: Request = context.switchToHttp().getRequest();
     const res: Response = context.switchToHttp().getResponse();
 
-    const sessionId: string | undefined = req.cookies[SESSION_ID_KEY] || req.headers[SESSION_ID_KEY];
-    if (!sessionId) throw Message.UNAUTHORIZED;
+    const sessionKey: string | undefined = req.cookies[SESSION_KEY] || req.headers[SESSION_KEY];
 
-    const sessionData = await this.sessionService.get(sessionId);
+    if (!sessionKey) throw Message.UNAUTHORIZED;
+
+    const sessionData = await this.sessionService.get(sessionKey);
     if (!sessionData?.memberIdx) throw Message.UNAUTHORIZED;
 
     const clientInfo = Utility.getClientInfo(req);
@@ -43,11 +44,11 @@ export class AuthGuard implements CanActivate {
     // 세션 만료까지 refreshTime 보다 오래 남은경우 갱신하지 않고 return
     if ((sessionData.ttl - now) / 1000 > config.memberAuth.session.refreshTime) return true;
 
-    const newSessionId = await this.sessionService.create(memberInfo.idx, clientInfo.userAgent);
+    const newSessionKey = await this.sessionService.create(memberInfo.idx, clientInfo.userAgent);
 
-    CookieUtility.setSessionId(res, newSessionId);
+    CookieUtility.setSessionKey(res, newSessionKey);
 
-    res.header("newSessionId", newSessionId);
+    res.header(NEW_SESSION_KEY, newSessionKey);
 
     return true;
   }

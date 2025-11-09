@@ -1,27 +1,27 @@
+import { SESSION_KEY } from "../constants/session";
 import { config } from "../config";
-import { Response } from "express";
-import { SESSION_ID_KEY } from "../constants/session";
+import type { Response } from "express";
 
 export class CookieUtility {
-  static setSessionId(
+  static setSessionKey(
     res: Response,
-    sessionId: string
+    sessionKey: string
   ) {
     res.cookie(
-      SESSION_ID_KEY,
-      sessionId,
+      SESSION_KEY,
+      sessionKey,
       {
         httpOnly: true,
-        secure: globalThis.SERVER_TYPE !== "dev",
+        secure: config.serverType !== "dev",
         sameSite: "strict",
         maxAge: config.memberAuth.session.expireTime * 1000
       }
     )
   }
 
-  static deleteSessionId(
+  static deleteSessionKey(
     res: Response,
   ) {
-    res.clearCookie(SESSION_ID_KEY);
+    res.clearCookie(SESSION_KEY);
   }
 }

@@ -12,7 +12,7 @@ COPY server/src ./src
 COPY server/.env.prod ./.env.prod
 COPY server/.env ./.env
 
-RUN npm run build:prod
+RUN npm run prod:build
 
 FROM node:22.14.0
 
@@ -29,4 +29,4 @@ RUN npm i -g dotenv-cli
 COPY server/prisma ./prisma
 RUN npx prisma generate
 
-CMD ["npm", "run", "start:prod"]
+CMD ["npm", "run", "prod:start"]
