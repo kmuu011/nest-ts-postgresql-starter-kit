@@ -47,6 +47,11 @@ const config = {
     host: envConfig.REDIS_HOST,
     port: 6379,
     defaultTTL: 60 * 60 * 24
+  },
+
+  staticPath: path.join(__dirname, '../../static'),
+  filePath: {
+    file: '/files'
   }
 };
 

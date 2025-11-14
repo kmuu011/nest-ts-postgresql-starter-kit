@@ -6,14 +6,26 @@ import cookieParser from "cookie-parser";
 import { OutOfControlExceptionFilter } from './common/filter/exception.filter';
 import { ControllableExceptionFilter } from './common/filter/exception.filter';
 import { NEW_SESSION_KEY, SESSION_KEY } from './constants/session';
+import { NestExpressApplication } from '@nestjs/platform-express';
+
+// BigInt를 JSON으로 직렬화할 수 있도록 전역 설정
+(BigInt.prototype as any).toJSON = function () {
+  return this.toString();
+};
 
 async function bootstrap() {
-  const app = await NestFactory.create(AppModule);
+  const app = await NestFactory.create<NestExpressApplication>(AppModule);
+
+  // Serve static files
+  app.useStaticAssets(config.staticPath, {
+    prefix: '/static/',
+  });
 
   app.enableCors({
     origin: [
       'http://127.0.0.1:3000',
       'http://localhost:3000',
+      'http://192.168.0.74:8100',
     ],
     credentials: true, // 쿠키/인증정보 허용 시 필요
     methods: ['DELETE', 'GET', 'POST', 'PATCH', 'OPTIONS'],

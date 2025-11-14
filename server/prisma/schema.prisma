@@ -14,8 +14,8 @@ model Member {
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
-  memos     Memo[]
-  files     File[]
+  memos Memo[]
+  files File[]
 }
 
 model Memo {
@@ -25,7 +25,7 @@ model Memo {
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
-  member    Member   @relation(fields: [memberIdx], references: [idx], onDelete: Cascade)
+  member Member @relation(fields: [memberIdx], references: [idx], onDelete: Cascade)
 
   @@index([memberIdx])
 }
@@ -39,7 +39,7 @@ model File {
   fileSize  BigInt
   createdAt DateTime @default(now())
 
-  member    Member   @relation(fields: [memberIdx], references: [idx], onDelete: Cascade)
+  member Member @relation(fields: [memberIdx], references: [idx], onDelete: Cascade)
 
   @@index([memberIdx])
 }

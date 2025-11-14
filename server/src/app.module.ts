@@ -5,6 +5,7 @@ import { CacheService } from "./common/cache/cache.service";
 import { createKeyv } from '@keyv/redis';
 import { config } from "./config";
 import { MemoModule } from './modules/memo/memo.module';
+import { FileModule } from './modules/file/file.module';
 import { SessionService } from './common/session/session.service';
 import { MemberRepository } from './modules/member/member.repository';
 import { PrismaService } from "./common/prisma/prisma.service";
@@ -22,6 +23,7 @@ const moduleMetaData = {
     }),
     MemberModule,
     MemoModule,
+    FileModule,
   ],
   providers: [
     PrismaService,

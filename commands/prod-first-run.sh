@@ -5,8 +5,6 @@ PROJECT_ROOT="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
 cd "$PROJECT_ROOT/docker-compose/prod"
 docker compose up postgresql -d
 
-timeout /t 2 /nobreak >NUL
-
 # 초기화 및 배포 실행
 cd "$PROJECT_ROOT/commands"
 ./init.sh

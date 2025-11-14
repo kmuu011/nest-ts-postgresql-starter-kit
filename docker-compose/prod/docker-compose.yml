@@ -44,6 +44,8 @@ services:
     networks:
       static-network:
         ipv4_address: 172.25.0.5
+    volumes:
+      - ../../server/static:/server/static
 
   node_1:
     container_name: "prod_node_1"
@@ -53,6 +55,8 @@ services:
     networks:
       static-network:
         ipv4_address: 172.25.0.6
+    volumes:
+      - ../../server/static:/server/static
 
 volumes:
   postgresql-data:
