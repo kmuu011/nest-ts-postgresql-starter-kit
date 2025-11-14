@@ -1,16 +1,16 @@
 import { Injectable } from '@nestjs/common';
 import { FileRepository } from './file.repository';
-import { File, Prisma } from '@prisma/client';
+import { File } from '@prisma/client';
 import { BaseService } from 'src/common/base/base.service';
 import { PaginatedServiceData } from 'src/types/common';
 import { Message } from 'src/utils/MessageUtility';
 import { keyDescriptionObj } from 'src/constants/keyDescriptionObj';
-import { SaveFileDto } from './dto/saveFile.dto';
 import { PrismaService } from 'src/common/prisma/prisma.service';
 import { KeyUtility } from 'src/utils/KeyUtility';
 import { config } from 'src/config';
 import * as fs from 'fs';
 import * as path from 'path';
+import { UploadedFile } from './file.interface';
 
 @Injectable()
 export class FileService extends BaseService {
@@ -50,8 +50,8 @@ export class FileService extends BaseService {
 
     return this.returnListType({
       itemList: fileList,
-      page: 1,
-      count: 10,
+      page,
+      count,
       totalCount: fileCount
     });
   }
@@ -72,37 +72,9 @@ export class FileService extends BaseService {
     return file;
   }
 
-  async create(
-    memberIdx: number,
-    saveFileDto: SaveFileDto
-  ): Promise<File> {
-    const file = await this.fileRepository.create({
-      ...saveFileDto,
-      fileSize: BigInt(saveFileDto.fileSize),
-      member: { connect: { idx: memberIdx } },
-    });
-    return file;
-  }
-
-  async download(
-    memberIdx: number,
-    fileIdx: number
-  ): Promise<File> {
-    const file = await this.fileRepository.selectOne(
-      memberIdx,
-      fileIdx
-    );
-
-    if (!file) {
-      throw Message.NOT_EXIST(keyDescriptionObj.file);
-    }
-
-    return file;
-  }
-
   async upload(
     memberIdx: number,
-    files: any[]
+    files: UploadedFile[]
   ): Promise<File[]> {
     const uploadedFiles: File[] = [];
 

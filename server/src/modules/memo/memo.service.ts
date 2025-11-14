@@ -1,6 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { MemoRepository } from './memo.repository';
-import { Memo, Prisma } from '@prisma/client';
+import { Memo } from '@prisma/client';
 import { BaseService } from 'src/common/base/base.service';
 import { PaginatedServiceData } from 'src/types/common';
 import { Message } from 'src/utils/MessageUtility';
@@ -44,8 +44,8 @@ export class MemoService extends BaseService {
 
     return this.returnListType({
       itemList: memoList,
-      page: 1,
-      count: 10,
+      page,
+      count,
       totalCount: memoCount
     });
   }

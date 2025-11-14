@@ -14,3 +14,5 @@ RUN wget https://packages.groonga.org/debian/groonga-apt-source-latest-bookworm.
 RUN apt-get update && \
     apt-get install -y -V postgresql-16-pgdg-pgroonga groonga-normalizer-mysql && \
     rm -rf /var/lib/apt/lists/*
+
+COPY initdb/ /docker-entrypoint-initdb.d/
