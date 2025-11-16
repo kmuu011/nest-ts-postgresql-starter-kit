@@ -29,6 +29,7 @@ services:
     ports: [ "5432:5432" ]
     volumes:
       - postgresql-data:/var/lib/postgresql/data:Z
+      - ./docker_file/postgre/initdb:/docker-entrypoint-initdb.d:ro
     environment:
       POSTGRES_USER: starter
       POSTGRES_PASSWORD: root

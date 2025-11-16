@@ -1,8 +1,9 @@
 # nest-ts-postgresql-starter-kit
 
 ## Prerequisites
-- **Node.js v22** 이상
-- **Docker Compose v2** 이상
+- **Node.js v22**
+- **Docker Compose v2**
+
 ## Linux 환경에서 개발 서버 실행 방법
 1. **실행 권한 부여**  
    `chmod +x ./commands/*` 실행
