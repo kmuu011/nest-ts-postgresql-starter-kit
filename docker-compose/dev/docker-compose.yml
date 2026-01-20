@@ -7,7 +7,7 @@ services:
       - "host.docker.internal:host-gateway"
     volumes:
       - ./nginx.conf:/etc/nginx/nginx.conf:ro
-    restart: unless-stopped
+    restart: "no"
     networks:
       static-network:
         ipv4_address: 172.27.0.2
@@ -16,7 +16,7 @@ services:
     container_name: "dev_redis"
     ports: [ "6379:6379" ]
     image: "redis"
-    restart: unless-stopped
+    restart: "no"
     networks:
       static-network:
         ipv4_address: 172.27.0.3
@@ -34,7 +34,7 @@ services:
       POSTGRES_USER: starter
       POSTGRES_PASSWORD: root
       POSTGRES_DB: my_db
-    restart: unless-stopped
+    restart: "no"
     networks:
       static-network:
         ipv4_address: 172.27.0.4
