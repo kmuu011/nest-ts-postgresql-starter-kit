@@ -26,7 +26,10 @@ async function bootstrap() {
     origin: [
       'http://127.0.0.1:3000',
       'http://localhost:3000',
-      'http://192.168.0.74:8100',
+      'http://192.168.0.75:3000',
+      'http://192.168.0.74:3000',
+      'http://192.168.0.75:8200',
+      'http://192.168.0.74:8200',
     ],
     credentials: true, // 쿠키/인증정보 허용 시 필요
     methods: ['DELETE', 'GET', 'POST', 'PATCH', 'OPTIONS'],
@@ -40,6 +43,8 @@ async function bootstrap() {
       'Authorization',
       'X-Requested-With',
       'Cookie',
+      'is-admin',
+      'timezone-offset'
     ],
     exposedHeaders: [
       NEW_SESSION_KEY,
