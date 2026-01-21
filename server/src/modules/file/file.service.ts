@@ -101,15 +101,15 @@ export class FileService extends BaseService {
       fs.writeFileSync(filePath, file.buffer);
 
       // Create database record
-      const createdFile = await this.fileRepository.create({
-        fileKey,
-        fileName,
-        fileType,
-        fileSize: BigInt(file.size),
-        member: { connect: { idx: memberIdx } },
-      });
+      // const createdFile = await this.fileRepository.create({
+      //   fileKey,
+      //   fileName,
+      //   fileType,
+      //   fileSize: BigInt(file.size),
+      //   member: { connect: { idx: memberIdx } },
+      // });
 
-      uploadedFiles.push(createdFile);
+      // uploadedFiles.push(createdFile);
     }
 
     return uploadedFiles;

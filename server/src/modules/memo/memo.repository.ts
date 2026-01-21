@@ -1,23 +1,35 @@
 import { Injectable } from "@nestjs/common";
 import { PrismaService } from "../../common/prisma/prisma.service";
-import { Memo, Prisma } from "@prisma/client";
+import { Memo, MemoBlock, Prisma } from "@prisma/client";
+
+export type MemoWithBlocks = Memo & { blocks: MemoBlock[] };
 
 @Injectable()
 export class MemoRepository {
   constructor(private prisma: PrismaService) { }
 
-  async create(data: Prisma.MemoCreateInput): Promise<Memo> {
+  async create(data: Prisma.MemoCreateInput): Promise<MemoWithBlocks> {
     return this.prisma.db.memo.create({
       data,
+      include: {
+        blocks: {
+          orderBy: { orderIndex: 'asc' }
+        }
+      }
     });
   }
 
   async selectOne(
     memberIdx: number,
     idx: number
-  ): Promise<Memo | null> {
+  ): Promise<MemoWithBlocks | null> {
     return this.prisma.db.memo.findUnique({
       where: { memberIdx, idx },
+      include: {
+        blocks: {
+          orderBy: { orderIndex: 'asc' }
+        }
+      }
     });
   }
 
@@ -25,51 +37,82 @@ export class MemoRepository {
     memberIdx: number,
     searchKeywordList: string[],
     skip?: number,
-    take?: number
-  ): Promise<Memo[]> {
-    const sql = Prisma.sql`
-      SELECT * 
-      FROM "Memo"
-      WHERE "memberIdx" = ${memberIdx}
-      ${searchKeywordList?.length > 0
-        ? Prisma.sql`AND (${Prisma.join(searchKeywordList.map((kw) => Prisma.sql`"memo" &@ ${kw}`), ` AND `)})`
-        : Prisma.sql``
-      }
+    take?: number,
+    archived?: boolean
+  ): Promise<MemoWithBlocks[]> {
+    const where: Prisma.MemoWhereInput = {
+      memberIdx,
+      ...(archived !== undefined && { archived }),
+    };
 
-      ORDER BY "idx" DESC
-      LIMIT ${take}
-      OFFSET ${skip}
-    `;
+    // 검색어가 있으면 블록 content 검색
+    if (searchKeywordList?.length > 0) {
+      where.blocks = {
+        some: {
+          OR: searchKeywordList.map(kw => ({
+            content: {
+              contains: kw
+            }
+          }))
+        }
+      };
+    }
 
-    return (await this.prisma.db.$queryRaw(sql)) as Memo[];
+    return this.prisma.db.memo.findMany({
+      where,
+      include: {
+        blocks: {
+          orderBy: { orderIndex: 'asc' }
+        }
+      },
+      orderBy: [
+        { pinned: 'desc' },
+        { idx: 'desc' }
+      ],
+      skip,
+      take
+    });
   }
 
   async selectCount(
     memberIdx: number,
     searchKeywordList: string[],
+    archived?: boolean
   ): Promise<number> {
-    const sql = Prisma.sql`
-      SELECT LEAST(COUNT(*), 2147483647)::int AS "totalCount"
-      FROM "Memo"
-      WHERE "memberIdx" = ${memberIdx}
-      ${searchKeywordList?.length > 0
-        ? Prisma.sql`AND (${Prisma.join(searchKeywordList.map((kw) => Prisma.sql`"memo" &@ ${kw}`), ` AND `)})`
-        : Prisma.sql``
-      }
-    `;
+    const where: Prisma.MemoWhereInput = {
+      memberIdx,
+      ...(archived !== undefined && { archived }),
+    };
 
-    const totalCountResult = await this.prisma.db.$queryRaw(sql) as any[];
-    return totalCountResult[0].totalCount;
+    // 검색어가 있으면 블록 content 검색
+    if (searchKeywordList?.length > 0) {
+      where.blocks = {
+        some: {
+          OR: searchKeywordList.map(kw => ({
+            content: {
+              contains: kw
+            }
+          }))
+        }
+      };
+    }
+
+    return this.prisma.db.memo.count({ where });
   }
 
   async update(params: {
     where: Prisma.MemoWhereUniqueInput;
     data: Prisma.MemoUpdateInput;
-  }): Promise<Memo> {
+  }): Promise<MemoWithBlocks> {
     const { where, data } = params;
     return this.prisma.db.memo.update({
       where,
       data,
+      include: {
+        blocks: {
+          orderBy: { orderIndex: 'asc' }
+        }
+      }
     });
   }
 

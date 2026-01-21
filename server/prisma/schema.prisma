@@ -20,26 +20,55 @@ model Member {
 
 model Memo {
   idx       Int      @id @default(autoincrement())
-  memo      String
   memberIdx Int
+  title     String?  @db.VarChar(200)
+  pinned    Boolean  @default(false)
+  archived  Boolean  @default(false)
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
-  member Member @relation(fields: [memberIdx], references: [idx], onDelete: Cascade)
+  member Member      @relation(fields: [memberIdx], references: [idx], onDelete: Cascade)
+  blocks MemoBlock[]
 
   @@index([memberIdx])
+  @@index([memberIdx, pinned])
+  @@index([memberIdx, archived])
+}
+
+model MemoBlock {
+  idx             Int      @id @default(autoincrement())
+  memoIdx         Int
+  orderIndex      Int
+  type            String   @db.VarChar(20) // TEXT, CHECKLIST, IMAGE, VIDEO
+  content         String?  @db.Text
+  checked         Boolean? // CHECKLIST 타입일 때 체크 여부
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
+  fileIdx         Int?     @unique
+  displayWidth    Int?
+  displayHeight   Int?
+  videoDurationMs Int?
+
+  file File? @relation(fields: [fileIdx], references: [idx], onDelete: SetNull)
+  memo Memo  @relation(fields: [memoIdx], references: [idx], onDelete: Cascade)
+
+  @@index([memoIdx])
+  @@index([memoIdx, orderIndex])
+  @@index([fileIdx])
 }
 
 model File {
-  idx       Int      @id @default(autoincrement())
-  memberIdx Int
-  fileKey   String   @db.Text()
-  fileName  String   @db.VarChar(45)
-  fileType  String   @db.VarChar(15)
-  fileSize  BigInt
-  createdAt DateTime @default(now())
+  idx          Int      @id @default(autoincrement())
+  memberIdx    Int
+  fileKey      String   @db.Text()
+  fileName     String   @db.VarChar(45)
+  fileType     String   @db.VarChar(15)
+  fileMimeType String   @db.VarChar(30)
+  fileSize     BigInt
+  createdAt    DateTime @default(now())
 
-  member Member @relation(fields: [memberIdx], references: [idx], onDelete: Cascade)
+  member    Member     @relation(fields: [memberIdx], references: [idx], onDelete: Cascade)
+  memoBlock MemoBlock?
 
   @@index([memberIdx])
 }

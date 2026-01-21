@@ -71,11 +71,11 @@ export class MemberService {
 
     const member = await this.memberRepository.createMember(signupDto);
 
-    await this.prisma.db.memo.create({
-      data: {
-        memo: "테스트 메모 입니다.",
-        memberIdx: member.idx,
-      },
-    });
+    // await this.prisma.db.memo.create({
+    //   data: {
+    //     memo: "테스트 메모 입니다.",
+    //     memberIdx: member.idx,
+    //   },
+    // });
   }
 }

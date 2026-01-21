@@ -7,9 +7,10 @@ import { MemoService } from './memo.service';
 import type { Request } from 'express';
 import { MemoGuard } from './memo.guard';
 import { PaginationQueryDto } from 'src/common/dto/pagination-query.dto';
+import { SESSION_KEY } from 'src/constants/session';
 
 @ApiTags('Memo')
-@ApiSecurity('session-key')
+@ApiSecurity(SESSION_KEY)
 @UseGuards(AuthGuard)
 @Controller('memo')
 export class MemoController extends BaseController {
@@ -20,25 +21,49 @@ export class MemoController extends BaseController {
   }
 
   @Get("/")
-  @ApiOperation({ summary: '메모 목록 조회', description: '페이징 및 검색 지원' })
+  @ApiOperation({
+    summary: '메모 목록 조회',
+    description: '페이징 및 검색 지원. archived=0(일반), archived=1(보관함). pinned 메모는 자동으로 상단 정렬'
+  })
   @ApiResponse({ status: 200, description: '메모 목록 조회 성공' })
   async getMemoList(
     @Req() req: Request,
     @Query() query: PaginationQueryDto,
+    @Query('archived') archived?: string,
   ) {
     const memberIdx = req.memberInfo!.idx;
+    const archivedFilter = archived === '1' ? true : archived === '0' ? false : undefined;
+
     const memoList = await this.memoService.selectList(
       memberIdx,
       query.page,
       query.count,
-      query.search
+      query.search,
+      archivedFilter
     );
 
     return memoList;
   }
 
   @Post("/")
-  @ApiOperation({ summary: '메모 생성', description: '새로운 메모 작성' })
+  @ApiOperation({
+    summary: '메모 생성',
+    description: `새로운 메모 작성
+
+블록 타입:
+- TEXT: 일반 텍스트 (content 필드 사용)
+- CHECKLIST: 체크리스트 (content에 JSON 문자열)
+- IMAGE: 이미지 (fileIdx, displayWidth, displayHeight 사용)
+- VIDEO: 비디오 (fileIdx, displayWidth, displayHeight, videoDurationMs 사용)
+
+예시:
+{
+  "title": "오늘 할 일",
+  "blocks": [
+    { "orderIndex": 0, "type": "TEXT", "content": "간단한 메모" }
+  ]
+}`
+  })
   @ApiResponse({ status: 201, description: '메모 생성 성공' })
   @ApiResponse({ status: 400, description: '잘못된 요청' })
   async createMemo(

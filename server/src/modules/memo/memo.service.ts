@@ -1,6 +1,5 @@
 import { Injectable } from '@nestjs/common';
-import { MemoRepository } from './memo.repository';
-import { Memo } from '@prisma/client';
+import { MemoRepository, MemoWithBlocks } from './memo.repository';
 import { BaseService } from 'src/common/base/base.service';
 import { PaginatedServiceData } from 'src/types/common';
 import { Message } from 'src/utils/MessageUtility';
@@ -19,8 +18,9 @@ export class MemoService extends BaseService {
     memberIdx: number,
     page: number,
     count: number,
-    search: string
-  ): Promise<PaginatedServiceData<Memo>> {
+    search: string,
+    archived?: boolean
+  ): Promise<PaginatedServiceData<MemoWithBlocks>> {
     let searchKeywordList: string[] = [];
 
     if (search) {
@@ -34,12 +34,14 @@ export class MemoService extends BaseService {
       memberIdx,
       searchKeywordList,
       (page - 1) * count,
-      count
+      count,
+      archived
     );
 
     const memoCount = await this.memoRepository.selectCount(
       memberIdx,
-      searchKeywordList
+      searchKeywordList,
+      archived
     );
 
     return this.returnListType({
@@ -53,7 +55,7 @@ export class MemoService extends BaseService {
   async selectOne(
     memberIdx: number,
     memoIdx: number
-  ): Promise<Memo | null> {
+  ): Promise<MemoWithBlocks | null> {
     const memo = await this.memoRepository.selectOne(
       memberIdx,
       memoIdx
@@ -69,10 +71,24 @@ export class MemoService extends BaseService {
   async create(
     memberIdx: number,
     saveMemoDto: SaveMemoDto
-  ): Promise<Memo> {
+  ): Promise<MemoWithBlocks> {
+    const { blocks, ...memoData } = saveMemoDto;
+
     const memo = await this.memoRepository.create({
-      ...saveMemoDto,
+      ...memoData,
       member: { connect: { idx: memberIdx } },
+      blocks: {
+        create: blocks.map(block => ({
+          orderIndex: block.orderIndex,
+          type: block.type,
+          content: block.content,
+          checked: block.checked,
+          ...(block.fileIdx && { file: { connect: { idx: block.fileIdx } } }),
+          displayWidth: block.displayWidth,
+          displayHeight: block.displayHeight,
+          videoDurationMs: block.videoDurationMs
+        }))
+      }
     });
     return memo;
   }
@@ -81,14 +97,30 @@ export class MemoService extends BaseService {
     memberIdx: number,
     memoIdx: number,
     saveMemoDto: SaveMemoDto
-  ): Promise<Memo> {
+  ): Promise<MemoWithBlocks> {
+    const { blocks, ...memoData } = saveMemoDto;
+
+    // 기존 블록 모두 삭제 후 새로 생성 (간단한 방식)
     const updatedMemo = await this.memoRepository.update({
       where: {
         idx: memoIdx,
         memberIdx
       },
       data: {
-        ...saveMemoDto,
+        ...memoData,
+        blocks: {
+          deleteMany: {},
+          create: blocks.map(block => ({
+            orderIndex: block.orderIndex,
+            type: block.type,
+            content: block.content,
+            checked: block.checked,
+            ...(block.fileIdx && { file: { connect: { idx: block.fileIdx } } }),
+            displayWidth: block.displayWidth,
+            displayHeight: block.displayHeight,
+            videoDurationMs: block.videoDurationMs
+          }))
+        }
       },
     });
 
