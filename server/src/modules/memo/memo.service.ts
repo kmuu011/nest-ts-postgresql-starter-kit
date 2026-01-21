@@ -149,5 +149,5 @@ export class MemoService extends BaseService {
 
     return true;
   }
-
 }
+
