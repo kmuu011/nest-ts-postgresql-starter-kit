@@ -186,6 +186,14 @@ class Message extends HttpException {
       statusCode: httpStatus.INTERNAL_SERVER_ERROR
     });
   }
+
+  static IN_USE(name: string) {
+    return new Message({
+      error: `in_use_${descriptionToKeyObj[name]}`,
+      message: `사용 중인 ${name}은(는) 삭제할 수 없습니다.`,
+      statusCode: httpStatus.BAD_REQUEST
+    });
+  }
 }
 
 export { Message };

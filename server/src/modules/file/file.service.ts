@@ -81,6 +81,7 @@ export class FileService extends BaseService {
     for (const file of files) {
       const fileType = path.extname(file.originalname).substring(1).toLowerCase();
       const fileName = path.basename(file.originalname, path.extname(file.originalname));
+      const fileMimeType = file.mimetype;
 
       // Generate unique file key
       const fileKey = await KeyUtility.createKey({
@@ -96,20 +97,21 @@ export class FileService extends BaseService {
       const uploadDir = path.join(config.staticPath, config.filePath.file);
       KeyUtility.ensureDirectoryExists(uploadDir);
 
-      // Save file
+      // Save file to disk
       const filePath = path.join(config.staticPath, fileKey);
       fs.writeFileSync(filePath, file.buffer);
 
       // Create database record
-      // const createdFile = await this.fileRepository.create({
-      //   fileKey,
-      //   fileName,
-      //   fileType,
-      //   fileSize: BigInt(file.size),
-      //   member: { connect: { idx: memberIdx } },
-      // });
+      const createdFile = await this.fileRepository.create({
+        fileKey,
+        fileName,
+        fileType,
+        fileMimeType,
+        fileSize: BigInt(file.size),
+        member: { connect: { idx: memberIdx } },
+      });
 
-      // uploadedFiles.push(createdFile);
+      uploadedFiles.push(createdFile);
     }
 
     return uploadedFiles;
@@ -117,16 +119,27 @@ export class FileService extends BaseService {
 
   async delete(
     memberIdx: number,
-    fileIdx: number
+    fileIdx: number,
+    skipInUseCheck: boolean = false
   ): Promise<Boolean> {
     const file = await this.fileRepository.selectOne(memberIdx, fileIdx);
 
-    if (file) {
-      // Delete physical file
-      const filePath = path.join(config.staticPath, file.fileKey);
-      if (fs.existsSync(filePath)) {
-        fs.unlinkSync(filePath);
+    if (!file) {
+      throw Message.NOT_EXIST(keyDescriptionObj.file);
+    }
+
+    // 메모에서 사용 중인지 확인 (skipInUseCheck가 true면 건너뜀 - 메모 삭제 시 호출)
+    if (!skipInUseCheck) {
+      const isUsed = await this.fileRepository.isUsedInMemoBlock(fileIdx);
+      if (isUsed) {
+        throw Message.IN_USE(keyDescriptionObj.file);
       }
+    }
+
+    // Delete physical file
+    const filePath = path.join(config.staticPath, file.fileKey);
+    if (fs.existsSync(filePath)) {
+      fs.unlinkSync(filePath);
     }
 
     await this.fileRepository.delete({

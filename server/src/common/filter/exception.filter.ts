@@ -27,7 +27,11 @@ export class ControllableExceptionFilter implements ExceptionFilter {
       message = String(message);
     }
 
-    console.log(`[ControllableExceptionFilter] ${api}`, exception);
+    
+    // Jest 테스트 환경에서는 로그 출력하지 않음
+    if (!process.env.JEST_WORKER_ID) {
+      console.log(`[ControllableExceptionFilter] ${api}`, exception);
+    }
 
     // HTTP 상태 코드가 유효하지 않은 경우 400으로 변경
     const httpStatus = (status >= 100 && status < 1000) ? status : 400;
@@ -52,7 +56,10 @@ export class OutOfControlExceptionFilter implements ExceptionFilter {
     const api = req.originalUrl;
     const status = exception?.status || 500;
 
-    console.log(`[OutOfControlExceptionFilter] ${api}`, exception);
+    // Jest 테스트 환경에서는 로그 출력하지 않음
+    if (!process.env.JEST_WORKER_ID) {
+      console.log(`[OutOfControlExceptionFilter] ${api}`, exception);
+    }
 
     if (status === 404) {
       res

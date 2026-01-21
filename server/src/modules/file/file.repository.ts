@@ -67,4 +67,13 @@ export class FileRepository {
       where,
     });
   }
+
+  async isUsedInMemoBlock(fileIdx: number): Promise<boolean> {
+    const memoBlock = await this.prisma.db.memoBlock.findFirst({
+      where: { fileIdx },
+      select: { idx: true }
+    });
+
+    return memoBlock !== null;
+  }
 }

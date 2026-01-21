@@ -121,4 +121,20 @@ export class MemoRepository {
       where,
     });
   }
+
+  async selectFileIdxListByMemo(
+    memberIdx: number,
+    memoIdx: number
+  ): Promise<number[]> {
+    const blocks = await this.prisma.db.memoBlock.findMany({
+      where: {
+        memoIdx,
+        memo: { memberIdx },
+        fileIdx: { not: null }
+      },
+      select: { fileIdx: true }
+    });
+
+    return blocks.map(block => block.fileIdx!);
+  }
 }

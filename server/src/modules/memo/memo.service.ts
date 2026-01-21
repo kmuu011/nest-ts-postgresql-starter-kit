@@ -5,11 +5,13 @@ import { PaginatedServiceData } from 'src/types/common';
 import { Message } from 'src/utils/MessageUtility';
 import { keyDescriptionObj } from 'src/constants/keyDescriptionObj';
 import { SaveMemoDto } from './dto/saveMemo.dto';
+import { FileService } from '../file/file.service';
 
 @Injectable()
 export class MemoService extends BaseService {
   constructor(
-    private readonly memoRepository: MemoRepository
+    private readonly memoRepository: MemoRepository,
+    private readonly fileService: FileService
   ) {
     super();
   }
@@ -131,10 +133,19 @@ export class MemoService extends BaseService {
     memberIdx: number,
     memoIdx: number
   ): Promise<Boolean> {
+    // 메모에 연결된 파일 idx 목록 조회
+    const fileIdxList = await this.memoRepository.selectFileIdxListByMemo(memberIdx, memoIdx);
+
+    // 메모 삭제 (MemoBlock은 cascade로 삭제됨)
     await this.memoRepository.delete({
       idx: memoIdx,
       memberIdx
     });
+
+    // 연결되어 있던 파일들 삭제 (DB + 스토리지, 사용 중 체크 스킵)
+    for (const fileIdx of fileIdxList) {
+      await this.fileService.delete(memberIdx, fileIdx, true);
+    }
 
     return true;
   }
