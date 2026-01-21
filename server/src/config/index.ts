@@ -2,6 +2,8 @@ import * as process from "node:process";
 import * as path from "node:path";
 import * as fs from "node:fs";
 
+const dirPath = __dirname.substring(0, __dirname.lastIndexOf('server') + 'server'.length);
+
 if (!process.env.npm_lifecycle_event) {
   throw "npm_lifecycle_event 환경 변수가 설정되어 있지 않습니다.";
 }
@@ -49,7 +51,7 @@ const config = {
     defaultTTL: 60 * 60 * 24
   },
 
-  staticPath: path.join(__dirname, '../../static'),
+  staticPath: dirPath + '/static',
   filePath: {
     file: '/files'
   }

@@ -8,6 +8,8 @@ import { ControllableExceptionFilter } from './common/filter/exception.filter';
 import { NEW_SESSION_KEY, SESSION_KEY } from './constants/session';
 import { NestExpressApplication } from '@nestjs/platform-express';
 import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
+import express from 'express';
+import * as path from 'path';
 
 // BigInt를 JSON으로 직렬화할 수 있도록 전역 설정
 (BigInt.prototype as any).toJSON = function () {
@@ -18,9 +20,7 @@ async function bootstrap() {
   const app = await NestFactory.create<NestExpressApplication>(AppModule);
 
   // Serve static files
-  app.useStaticAssets(config.staticPath, {
-    prefix: '/static/',
-  });
+  app.use('/static', express.static(config.staticPath));
 
   app.enableCors({
     origin: [
