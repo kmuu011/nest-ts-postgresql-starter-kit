@@ -6,10 +6,7 @@ import { PaginatedServiceData } from 'src/types/common';
 import { Message } from 'src/utils/MessageUtility';
 import { keyDescriptionObj } from 'src/constants/keyDescriptionObj';
 import { PrismaService } from 'src/common/prisma/prisma.service';
-import { KeyUtility } from 'src/utils/KeyUtility';
-import { config } from 'src/config';
-import * as fs from 'fs';
-import * as path from 'path';
+import { FileUtility } from 'src/utils/FileUtility';
 import { UploadedFile } from './file.interface';
 
 @Injectable()
@@ -79,27 +76,17 @@ export class FileService extends BaseService {
     const uploadedFiles: File[] = [];
 
     for (const file of files) {
-      const fileType = path.extname(file.originalname).substring(1).toLowerCase();
-      const fileName = path.basename(file.originalname, path.extname(file.originalname));
-      const fileMimeType = file.mimetype;
+      // 파일 정보 추출
+      const { fileType, fileName, fileMimeType } = FileUtility.extractFileInfo(
+        file.originalname,
+        file.mimetype
+      );
+      
+      // FileCategory 결정
+      const fileCategory = FileUtility.determineFileCategory(fileMimeType, fileType);
 
-      // Generate unique file key
-      const fileKey = await KeyUtility.createKey({
-        prisma: this.prisma,
-        tableName: 'file',
-        columnKey: 'fileKey',
-        path: config.filePath.file + '/',
-        includeDate: true,
-        suffixText: `.${fileType}`
-      });
-
-      // Ensure directory exists
-      const uploadDir = path.join(config.staticPath, config.filePath.file);
-      KeyUtility.ensureDirectoryExists(uploadDir);
-
-      // Save file to disk
-      const filePath = path.join(config.staticPath, fileKey);
-      fs.writeFileSync(filePath, file.buffer);
+      // 파일을 디스크에 저장
+      const fileKey = await FileUtility.saveFileToDisk(file, this.prisma);
 
       // Create database record
       const createdFile = await this.fileRepository.create({
@@ -108,6 +95,7 @@ export class FileService extends BaseService {
         fileType,
         fileMimeType,
         fileSize: BigInt(file.size),
+        fileCategory,
         member: { connect: { idx: memberIdx } },
       });
 
@@ -137,10 +125,7 @@ export class FileService extends BaseService {
     }
 
     // Delete physical file
-    const filePath = path.join(config.staticPath, file.fileKey);
-    if (fs.existsSync(filePath)) {
-      fs.unlinkSync(filePath);
-    }
+    FileUtility.deleteFileFromDisk(file.fileKey);
 
     await this.fileRepository.delete({
       idx: fileIdx,

@@ -1,3 +1,9 @@
+-- CreateEnum
+CREATE TYPE "public"."MemoBlockType" AS ENUM ('TEXT', 'CHECKLIST', 'FILE');
+
+-- CreateEnum
+CREATE TYPE "public"."FileCategory" AS ENUM ('IMAGE', 'VIDEO', 'AUDIO', 'DOCUMENT', 'OTHER');
+
 -- CreateTable
 CREATE TABLE "public"."Member" (
     "idx" SERIAL NOT NULL,
@@ -27,11 +33,15 @@ CREATE TABLE "public"."MemoBlock" (
     "idx" SERIAL NOT NULL,
     "memoIdx" INTEGER NOT NULL,
     "orderIndex" INTEGER NOT NULL,
-    "type" VARCHAR(20) NOT NULL,
+    "type" "public"."MemoBlockType" NOT NULL,
     "content" TEXT,
+    "checked" BOOLEAN,
     "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
     "updatedAt" TIMESTAMP(3) NOT NULL,
     "fileIdx" INTEGER,
+    "displayWidth" INTEGER,
+    "displayHeight" INTEGER,
+    "videoDurationMs" INTEGER,
 
     CONSTRAINT "MemoBlock_pkey" PRIMARY KEY ("idx")
 );
@@ -43,8 +53,9 @@ CREATE TABLE "public"."File" (
     "fileKey" TEXT NOT NULL,
     "fileName" VARCHAR(45) NOT NULL,
     "fileType" VARCHAR(15) NOT NULL,
-    "fileMimeType" VARCHAR(30) NOT NULL,
+    "fileMimeType" TEXT NOT NULL,
     "fileSize" BIGINT NOT NULL,
+    "fileCategory" "public"."FileCategory" NOT NULL DEFAULT 'OTHER',
     "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
 
     CONSTRAINT "File_pkey" PRIMARY KEY ("idx")
@@ -75,7 +86,16 @@ CREATE INDEX "MemoBlock_memoIdx_orderIndex_idx" ON "public"."MemoBlock"("memoIdx
 CREATE INDEX "MemoBlock_fileIdx_idx" ON "public"."MemoBlock"("fileIdx");
 
 -- CreateIndex
+CREATE INDEX "idx_memo_block_content_pgroonga" ON "public"."MemoBlock"("content");
+
+-- CreateIndex
+CREATE UNIQUE INDEX "File_fileKey_key" ON "public"."File"("fileKey");
+
+-- CreateIndex
 CREATE INDEX "File_memberIdx_idx" ON "public"."File"("memberIdx");
+
+-- CreateIndex
+CREATE INDEX "File_fileKey_idx" ON "public"."File"("fileKey");
 
 -- AddForeignKey
 ALTER TABLE "public"."Memo" ADD CONSTRAINT "Memo_memberIdx_fkey" FOREIGN KEY ("memberIdx") REFERENCES "public"."Member"("idx") ON DELETE CASCADE ON UPDATE CASCADE;

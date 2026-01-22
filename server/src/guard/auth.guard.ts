@@ -5,7 +5,6 @@ import { Request, Response } from "express";
 import { NEW_SESSION_KEY, SESSION_KEY } from "../constants/session";
 import { Message } from "../utils/MessageUtility";
 import { Utility } from "../utils/Utility";
-import { CacheService } from "../common/cache/cache.service";
 import { config } from "../config";
 import { CookieUtility } from "../utils/CookieUtility";
 

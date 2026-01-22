@@ -23,26 +23,19 @@ export class MemoService extends BaseService {
     search: string,
     archived?: boolean
   ): Promise<PaginatedServiceData<MemoWithBlocks>> {
-    let searchKeywordList: string[] = [];
-
-    if (search) {
-      searchKeywordList = search
-        .trim()
-        .split(' ')
-        .filter(keyword => keyword !== '');
-    }
+    const keyword = search?.trim() || undefined;
 
     const memoList = await this.memoRepository.selectList(
       memberIdx,
-      searchKeywordList,
-      (page - 1) * count,
+      page,
       count,
+      keyword,
       archived
     );
 
     const memoCount = await this.memoRepository.selectCount(
       memberIdx,
-      searchKeywordList,
+      keyword,
       archived
     );
 
@@ -88,10 +81,10 @@ export class MemoService extends BaseService {
           ...(block.fileIdx && { file: { connect: { idx: block.fileIdx } } }),
           displayWidth: block.displayWidth,
           displayHeight: block.displayHeight,
-          videoDurationMs: block.videoDurationMs
         }))
       }
     });
+    
     return memo;
   }
 
@@ -120,7 +113,6 @@ export class MemoService extends BaseService {
             ...(block.fileIdx && { file: { connect: { idx: block.fileIdx } } }),
             displayWidth: block.displayWidth,
             displayHeight: block.displayHeight,
-            videoDurationMs: block.videoDurationMs
           }))
         }
       },

@@ -35,19 +35,24 @@ model Memo {
   @@index([memberIdx, archived])
 }
 
+enum MemoBlockType {
+  TEXT
+  CHECKLIST
+  FILE
+}
+
 model MemoBlock {
-  idx             Int      @id @default(autoincrement())
+  idx             Int           @id @default(autoincrement())
   memoIdx         Int
   orderIndex      Int
-  type            String   @db.VarChar(20) // TEXT, CHECKLIST, IMAGE, VIDEO
-  content         String?  @db.Text
-  checked         Boolean? // CHECKLIST 타입일 때 체크 여부
-  createdAt       DateTime @default(now())
-  updatedAt       DateTime @updatedAt
-  fileIdx         Int?     @unique
+  type            MemoBlockType
+  content         String?       @db.Text
+  checked         Boolean?      // CHECKLIST 타입일 때 체크 여부
+  createdAt       DateTime      @default(now())
+  updatedAt       DateTime      @updatedAt
+  fileIdx         Int?          @unique
   displayWidth    Int?
   displayHeight   Int?
-  videoDurationMs Int?
 
   file File? @relation(fields: [fileIdx], references: [idx], onDelete: SetNull)
   memo Memo  @relation(fields: [memoIdx], references: [idx], onDelete: Cascade)
@@ -55,20 +60,31 @@ model MemoBlock {
   @@index([memoIdx])
   @@index([memoIdx, orderIndex])
   @@index([fileIdx])
+  @@index([content], map: "idx_memo_block_content_pgroonga")
+}
+
+enum FileCategory {
+  IMAGE
+  VIDEO
+  AUDIO
+  DOCUMENT
+  OTHER
 }
 
 model File {
   idx          Int      @id @default(autoincrement())
   memberIdx    Int
-  fileKey      String   @db.Text()
+  fileKey      String   @db.Text() @unique
   fileName     String   @db.VarChar(45)
   fileType     String   @db.VarChar(15)
-  fileMimeType String   @db.VarChar(30)
+  fileMimeType String   @db.Text()
   fileSize     BigInt
+  fileCategory FileCategory @default(OTHER)
   createdAt    DateTime @default(now())
 
   member    Member     @relation(fields: [memberIdx], references: [idx], onDelete: Cascade)
   memoBlock MemoBlock?
 
   @@index([memberIdx])
+  @@index([fileKey])
 }
