@@ -15,53 +15,27 @@ model Member {
   updatedAt DateTime @updatedAt
 
   memos Memo[]
-  files File[]
 }
 
 model Memo {
   idx       Int      @id @default(autoincrement())
   memberIdx Int
   title     String?  @db.VarChar(200)
+  content   Json?
+  text      String?  @db.Text()
   pinned    Boolean  @default(false)
   archived  Boolean  @default(false)
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
   member Member      @relation(fields: [memberIdx], references: [idx], onDelete: Cascade)
-  blocks MemoBlock[]
+  files File[]
 
   @@index([memberIdx])
   @@index([memberIdx, pinned])
   @@index([memberIdx, archived])
 }
 
-enum MemoBlockType {
-  TEXT
-  CHECKLIST
-  FILE
-}
-
-model MemoBlock {
-  idx             Int           @id @default(autoincrement())
-  memoIdx         Int
-  orderIndex      Int
-  type            MemoBlockType
-  content         String?       @db.Text
-  checked         Boolean?      // CHECKLIST 타입일 때 체크 여부
-  createdAt       DateTime      @default(now())
-  updatedAt       DateTime      @updatedAt
-  fileIdx         Int?          @unique
-  displayWidth    Int?
-  displayHeight   Int?
-
-  file File? @relation(fields: [fileIdx], references: [idx], onDelete: SetNull)
-  memo Memo  @relation(fields: [memoIdx], references: [idx], onDelete: Cascade)
-
-  @@index([memoIdx])
-  @@index([memoIdx, orderIndex])
-  @@index([fileIdx])
-  @@index([content], map: "idx_memo_block_content_pgroonga")
-}
 
 enum FileCategory {
   IMAGE
@@ -73,7 +47,7 @@ enum FileCategory {
 
 model File {
   idx          Int      @id @default(autoincrement())
-  memberIdx    Int
+  memoIdx      Int?
   fileKey      String   @db.Text() @unique
   fileName     String   @db.VarChar(45)
   fileType     String   @db.VarChar(15)
@@ -82,9 +56,8 @@ model File {
   fileCategory FileCategory @default(OTHER)
   createdAt    DateTime @default(now())
 
-  member    Member     @relation(fields: [memberIdx], references: [idx], onDelete: Cascade)
-  memoBlock MemoBlock?
+  memo      Memo?      @relation(fields: [memoIdx], references: [idx], onDelete: SetNull)
 
-  @@index([memberIdx])
   @@index([fileKey])
+  @@index([memoIdx])
 }

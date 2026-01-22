@@ -26,24 +26,20 @@ describe('MemoController integration', () => {
   });
 
   describe('메모 CRUD', () => {
-    it('메모 생성 - TEXT 블록', async () => {
+    it('메모 생성', async () => {
       const createRes = await request(app.getHttpServer())
         .post('/api/memo')
         .set('session-key', sessionKey)
         .set('User-Agent', testUserAgent)
         .send({
           title: '첫 번째 메모',
-          blocks: [
-            { orderIndex: 0, type: 'TEXT', content: '첫 번째 메모입니다.' }
-          ]
+          content: { text: '첫 번째 메모입니다.' }
         });
 
       expect(createRes.status).toBe(201);
       expect(typeof createRes.body.idx).toBe('number');
       expect(createRes.body.title).toBe('첫 번째 메모');
-      expect(createRes.body.blocks).toHaveLength(1);
-      expect(createRes.body.blocks[0].type).toBe('TEXT');
-      expect(createRes.body.blocks[0].content).toBe('첫 번째 메모입니다.');
+      expect(createRes.body.content).toEqual({ text: '첫 번째 메모입니다.' });
 
       memoIdx = createRes.body.idx;
     });
@@ -57,8 +53,7 @@ describe('MemoController integration', () => {
       expect(detailRes.status).toBe(200);
       expect(detailRes.body.idx).toBe(memoIdx);
       expect(detailRes.body.title).toBe('첫 번째 메모');
-      expect(detailRes.body.blocks).toHaveLength(1);
-      expect(detailRes.body.blocks[0].content).toBe('첫 번째 메모입니다.');
+      expect(detailRes.body.content).toEqual({ text: '첫 번째 메모입니다.' });
     });
 
     it('메모 리스트 조회', async () => {
@@ -83,10 +78,7 @@ describe('MemoController integration', () => {
         .set('User-Agent', testUserAgent)
         .send({
           title: '수정된 메모',
-          blocks: [
-            { orderIndex: 0, type: 'TEXT', content: '수정된 메모입니다.' },
-            { orderIndex: 1, type: 'TEXT', content: '두 번째 블록 추가' }
-          ]
+          content: { text: '수정된 메모입니다.' }
         });
 
       expect(updateRes.status).toBe(200);
@@ -100,9 +92,7 @@ describe('MemoController integration', () => {
 
       expect(updatedDetailRes.status).toBe(200);
       expect(updatedDetailRes.body.title).toBe('수정된 메모');
-      expect(updatedDetailRes.body.blocks).toHaveLength(2);
-      expect(updatedDetailRes.body.blocks[0].content).toBe('수정된 메모입니다.');
-      expect(updatedDetailRes.body.blocks[1].content).toBe('두 번째 블록 추가');
+      expect(updatedDetailRes.body.content).toEqual({ text: '수정된 메모입니다.' });
     });
 
     it('메모 삭제', async () => {
@@ -131,76 +121,41 @@ describe('MemoController integration', () => {
     });
   });
 
-  describe('메모 블록 타입', () => {
-    it('CHECKLIST 블록 생성', async () => {
+  describe('메모 내용', () => {
+    it('content 없이 메모 생성', async () => {
       const createRes = await request(app.getHttpServer())
         .post('/api/memo')
         .set('session-key', sessionKey)
         .set('User-Agent', testUserAgent)
         .send({
-          title: '체크리스트 메모',
-          blocks: [
-            { orderIndex: 0, type: 'CHECKLIST', content: '할 일 1', checked: false },
-            { orderIndex: 1, type: 'CHECKLIST', content: '할 일 2', checked: true }
-          ]
-        });
-
-      expect(createRes.status).toBe(201);
-      expect(createRes.body.blocks).toHaveLength(2);
-      expect(createRes.body.blocks[0].type).toBe('CHECKLIST');
-      expect(createRes.body.blocks[0].checked).toBe(false);
-      expect(createRes.body.blocks[1].checked).toBe(true);
-
-      // 정리
-      await request(app.getHttpServer())
-        .delete(`/api/memo/${createRes.body.idx}`)
-        .set('session-key', sessionKey)
-        .set('User-Agent', testUserAgent);
-    });
-
-    it('혼합 블록 생성 (TEXT + CHECKLIST)', async () => {
-      const createRes = await request(app.getHttpServer())
-        .post('/api/memo')
-        .set('session-key', sessionKey)
-        .set('User-Agent', testUserAgent)
-        .send({
-          title: '혼합 메모',
-          blocks: [
-            { orderIndex: 0, type: 'TEXT', content: '오늘 할 일 목록' },
-            { orderIndex: 1, type: 'CHECKLIST', content: '회의 참석', checked: false },
-            { orderIndex: 2, type: 'CHECKLIST', content: '코드 리뷰', checked: false },
-            { orderIndex: 3, type: 'TEXT', content: '참고 사항: 점심 후 회의' }
-          ]
-        });
-
-      expect(createRes.status).toBe(201);
-      expect(createRes.body.blocks).toHaveLength(4);
-      expect(createRes.body.blocks[0].type).toBe('TEXT');
-      expect(createRes.body.blocks[1].type).toBe('CHECKLIST');
-      expect(createRes.body.blocks[2].type).toBe('CHECKLIST');
-      expect(createRes.body.blocks[3].type).toBe('TEXT');
-
-      // 정리
-      await request(app.getHttpServer())
-        .delete(`/api/memo/${createRes.body.idx}`)
-        .set('session-key', sessionKey)
-        .set('User-Agent', testUserAgent);
-    });
-
-    it('빈 blocks 배열로 메모 생성', async () => {
-      const createRes = await request(app.getHttpServer())
-        .post('/api/memo')
-        .set('session-key', sessionKey)
-        .set('User-Agent', testUserAgent)
-        .send({
-          title: '빈 블록 메모',
-          blocks: []
+          title: '제목만 있는 메모'
         });
 
       expect(createRes.status).toBe(201);
       expect(typeof createRes.body.idx).toBe('number');
-      expect(createRes.body.title).toBe('빈 블록 메모');
-      expect(createRes.body.blocks).toHaveLength(0);
+      expect(createRes.body.title).toBe('제목만 있는 메모');
+      expect(createRes.body.content).toBeNull();
+
+      // 정리
+      await request(app.getHttpServer())
+        .delete(`/api/memo/${createRes.body.idx}`)
+        .set('session-key', sessionKey)
+        .set('User-Agent', testUserAgent);
+    });
+
+    it('title 없이 메모 생성', async () => {
+      const createRes = await request(app.getHttpServer())
+        .post('/api/memo')
+        .set('session-key', sessionKey)
+        .set('User-Agent', testUserAgent)
+        .send({
+          content: { text: '내용만 있는 메모' }
+        });
+
+      expect(createRes.status).toBe(201);
+      expect(typeof createRes.body.idx).toBe('number');
+      expect(createRes.body.content).toEqual({ text: '내용만 있는 메모' });
+      expect(createRes.body.title).toBeNull();
 
       // 정리
       await request(app.getHttpServer())
@@ -223,7 +178,7 @@ describe('MemoController integration', () => {
         .set('User-Agent', testUserAgent)
         .send({
           title: '일반 메모',
-          blocks: [{ orderIndex: 0, type: 'TEXT', content: '일반 메모입니다.' }]
+          content: { text: '일반 메모입니다.' }
         });
       normalMemoIdx = normalRes.body.idx;
 
@@ -235,7 +190,7 @@ describe('MemoController integration', () => {
         .send({
           title: '고정 메모',
           pinned: true,
-          blocks: [{ orderIndex: 0, type: 'TEXT', content: '고정된 메모입니다.' }]
+          content: { text: '고정된 메모입니다.' }
         });
       pinnedMemoIdx = pinnedRes.body.idx;
 
@@ -247,7 +202,7 @@ describe('MemoController integration', () => {
         .send({
           title: '보관 메모',
           archived: true,
-          blocks: [{ orderIndex: 0, type: 'TEXT', content: '보관된 메모입니다.' }]
+          content: { text: '보관된 메모입니다.' }
         });
       archivedMemoIdx = archivedRes.body.idx;
     });
@@ -345,9 +300,7 @@ describe('MemoController integration', () => {
         .set('User-Agent', testUserAgent)
         .send({
           title: '검색 테스트 메모',
-          blocks: [
-            { orderIndex: 0, type: 'TEXT', content: '유니크한키워드ABC 검색용 메모입니다.' }
-          ]
+          content: { text: '유니크한키워드ABC 검색용 메모입니다.' }
         });
       searchMemoIdx = createRes.body.idx;
     });
@@ -359,7 +312,7 @@ describe('MemoController integration', () => {
         .set('User-Agent', testUserAgent);
     });
 
-    it('블록 content로 검색', async () => {
+    it('메모 content로 검색', async () => {
       const listRes = await request(app.getHttpServer())
         .get('/api/memo')
         .set('session-key', sessionKey)

@@ -16,8 +16,13 @@ export class FileRepository {
     memberIdx: number,
     idx: number
   ): Promise<File | null> {
-    return this.prisma.db.file.findUnique({
-      where: { memberIdx, idx },
+    return this.prisma.db.file.findFirst({
+      where: {
+        idx,
+        memo: {
+          memberIdx
+        }
+      },
     });
   }
 
@@ -28,15 +33,15 @@ export class FileRepository {
     take?: number
   ): Promise<File[]> {
     const sql = Prisma.sql`
-      SELECT *
-      FROM "File"
-      WHERE "memberIdx" = ${memberIdx}
+      SELECT f.*
+      FROM "File" f
+      INNER JOIN "Memo" m ON f."memoIdx" = m."idx"
+      WHERE m."memberIdx" = ${memberIdx}
       ${searchKeywordList?.length > 0
-        ? Prisma.sql`AND (${Prisma.join(searchKeywordList.map((kw) => Prisma.sql`"fileName" &@ ${kw}`), ` AND `)})`
+        ? Prisma.sql`AND (${Prisma.join(searchKeywordList.map((kw) => Prisma.sql`f."fileName" &@ ${kw}`), ` AND `)})`
         : Prisma.sql``
       }
-
-      ORDER BY "idx" DESC
+      ORDER BY f."idx" DESC
       LIMIT ${take}
       OFFSET ${skip}
     `;
@@ -50,10 +55,11 @@ export class FileRepository {
   ): Promise<number> {
     const sql = Prisma.sql`
       SELECT LEAST(COUNT(*), 2147483647)::int AS "totalCount"
-      FROM "File"
-      WHERE "memberIdx" = ${memberIdx}
+      FROM "File" f
+      INNER JOIN "Memo" m ON f."memoIdx" = m."idx"
+      WHERE m."memberIdx" = ${memberIdx}
       ${searchKeywordList?.length > 0
-        ? Prisma.sql`AND (${Prisma.join(searchKeywordList.map((kw) => Prisma.sql`"fileName" &@ ${kw}`), ` AND `)})`
+        ? Prisma.sql`AND (${Prisma.join(searchKeywordList.map((kw) => Prisma.sql`f."fileName" &@ ${kw}`), ` AND `)})`
         : Prisma.sql``
       }
     `;
@@ -62,18 +68,31 @@ export class FileRepository {
     return totalCountResult[0].totalCount;
   }
 
-  async delete(where: Prisma.FileWhereUniqueInput): Promise<File> {
+  async delete(where: { idx: number }): Promise<File> {
     return this.prisma.db.file.delete({
       where,
     });
   }
 
-  async isUsedInMemoBlock(fileIdx: number): Promise<boolean> {
-    const memoBlock = await this.prisma.db.memoBlock.findFirst({
-      where: { fileIdx },
-      select: { idx: true }
+  async isUsedInMemo(fileIdx: number): Promise<boolean> {
+    const file = await this.prisma.db.file.findFirst({
+      where: { idx: fileIdx },
+      select: { memoIdx: true }
     });
 
-    return memoBlock !== null;
+    return file !== null && file.memoIdx !== null;
+  }
+
+  async findByFileKey(fileKey: string): Promise<File | null> {
+    return this.prisma.db.file.findUnique({
+      where: { fileKey }
+    });
+  }
+
+  async updateMemoIdx(fileKey: string, memoIdx: number): Promise<File> {
+    return this.prisma.db.file.update({
+      where: { fileKey },
+      data: { memoIdx }
+    });
   }
 }

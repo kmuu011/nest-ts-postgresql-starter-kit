@@ -50,22 +50,7 @@ export class MemoController extends BaseController {
   @HttpCode(httpStatus.CREATED)
   @ApiOperation({
     summary: '메모 생성',
-    description: `새로운 메모 작성
-
-블록 타입:
-- TEXT: 일반 텍스트 (content 필드 사용)
-- CHECKLIST: 체크리스트 (content, checked 필드 사용)
-- FILE: 파일 (fileIdx, displayWidth, displayHeight 사용)
-
-예시:
-{
-  "title": "오늘 할 일",
-  "blocks": [
-    { "orderIndex": 0, "type": "TEXT", "content": "간단한 메모" }
-    { "orderIndex": 1, "type": "CHECKLIST", "content": "체크리스트 메모", "checked": false }
-    { "orderIndex": 2, "type": "FILE", "fileIdx": 1, "displayWidth": 800, "displayHeight": 600 }
-  ]
-}`
+    description: `새로운 메모 작성`
   })
   @ApiResponse({ status: httpStatus.CREATED, description: '메모 생성 성공' })
   @ApiResponse({ status: httpStatus.BAD_REQUEST, description: '잘못된 요청' })

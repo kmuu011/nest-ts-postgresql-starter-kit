@@ -70,8 +70,8 @@ export class FileService extends BaseService {
   }
 
   async upload(
-    memberIdx: number,
-    files: UploadedFile[]
+    files: UploadedFile[],
+    memoIdx?: number
   ): Promise<File[]> {
     const uploadedFiles: File[] = [];
 
@@ -89,15 +89,21 @@ export class FileService extends BaseService {
       const fileKey = await FileUtility.saveFileToDisk(file, this.prisma);
 
       // Create database record
-      const createdFile = await this.fileRepository.create({
+      const createData: any = {
         fileKey,
         fileName,
         fileType,
         fileMimeType,
         fileSize: BigInt(file.size),
         fileCategory,
-        member: { connect: { idx: memberIdx } },
-      });
+      };
+
+      // memoIdx가 있으면 연결, 없으면 null
+      if (memoIdx) {
+        createData.memo = { connect: { idx: memoIdx } };
+      }
+
+      const createdFile = await this.fileRepository.create(createData);
 
       uploadedFiles.push(createdFile);
     }
@@ -118,7 +124,7 @@ export class FileService extends BaseService {
 
     // 메모에서 사용 중인지 확인 (skipInUseCheck가 true면 건너뜀 - 메모 삭제 시 호출)
     if (!skipInUseCheck) {
-      const isUsed = await this.fileRepository.isUsedInMemoBlock(fileIdx);
+      const isUsed = await this.fileRepository.isUsedInMemo(fileIdx);
       if (isUsed) {
         throw Message.IN_USE(keyDescriptionObj.file);
       }
@@ -128,8 +134,7 @@ export class FileService extends BaseService {
     FileUtility.deleteFileFromDisk(file.fileKey);
 
     await this.fileRepository.delete({
-      idx: fileIdx,
-      memberIdx
+      idx: fileIdx
     });
 
     return true;

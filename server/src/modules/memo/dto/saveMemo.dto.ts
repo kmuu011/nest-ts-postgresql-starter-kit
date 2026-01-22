@@ -1,7 +1,5 @@
-import { IsOptional, IsString, IsArray, ValidateNested, IsBoolean, Length } from "class-validator";
-import { ApiProperty, ApiPropertyOptional } from "@nestjs/swagger";
-import { Type } from "class-transformer";
-import { MemoBlockDto } from "@/modules/memo-block/dto/memo-block.dto";
+import { IsOptional, IsString, IsBoolean, Length, IsObject } from "class-validator";
+import { ApiPropertyOptional } from "@nestjs/swagger";
 
 export class SaveMemoDto {
   @ApiPropertyOptional({
@@ -12,6 +10,20 @@ export class SaveMemoDto {
   @IsString()
   @Length(0, 200)
   title?: string;
+
+  @ApiPropertyOptional({
+    description: '메모 내용 (JSON 형식, 선택)',
+    example: { 
+      root: {
+        children: [],
+        type: "root",
+        version: 1
+      }
+    }
+  })
+  @IsOptional()
+  @IsObject()
+  content?: any;
 
   @ApiPropertyOptional({
     description: '고정 여부 (선택, 기본값: false)',
@@ -28,13 +40,4 @@ export class SaveMemoDto {
   @IsOptional()
   @IsBoolean()
   archived?: boolean;
-
-  @ApiProperty({
-    description: '메모 블록 리스트',
-    type: [MemoBlockDto],
-  })
-  @IsArray()
-  @ValidateNested({ each: true })
-  @Type(() => MemoBlockDto)
-  blocks: MemoBlockDto[];
 }

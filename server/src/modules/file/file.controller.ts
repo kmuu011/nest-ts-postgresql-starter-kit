@@ -77,13 +77,11 @@ export class FileController extends BaseController {
     @UploadedFiles() files: UploadedFile[],
     @Req() req: Request,
   ) {
-    const memberIdx = req.memberInfo!.idx;
-
     if (!files || files.length === 0) {
       throw Message.INVALID_PARAM(keyDescriptionObj.file);
     }
 
-    return await this.fileService.upload(memberIdx, files);
+    return await this.fileService.upload(files);
   }
 
   @Post("/:fileIdx/download")
