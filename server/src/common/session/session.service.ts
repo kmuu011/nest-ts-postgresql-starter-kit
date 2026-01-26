@@ -11,13 +11,15 @@ export class SessionService {
 
   async create(
     memberIdx: number,
-    userAgent: string
+    userAgent: string,
+    keepLogin: boolean = false
   ) {
     const sessionKey = await this.cacheService.getUnqKey(43);
 
     const sessionData = {
       memberIdx,
-      userAgent
+      userAgent,
+      keepLogin
     };
 
     await this.cacheService.set(

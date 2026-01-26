@@ -9,7 +9,6 @@ import { NEW_SESSION_KEY, SESSION_KEY } from './constants/session';
 import { NestExpressApplication } from '@nestjs/platform-express';
 import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
 import express from 'express';
-import * as path from 'path';
 
 // BigInt를 JSON으로 직렬화할 수 있도록 전역 설정
 (BigInt.prototype as any).toJSON = function () {
@@ -28,8 +27,8 @@ async function bootstrap() {
       'http://localhost:3000',
       'http://192.168.0.75:3000',
       'http://192.168.0.74:3000',
-      'http://192.168.0.75:8200',
-      'http://192.168.0.74:8200',
+      'http://192.168.0.75:8100',
+      'http://192.168.0.74:8100',
     ],
     credentials: true, // 쿠키/인증정보 허용 시 필요
     methods: ['DELETE', 'GET', 'POST', 'PATCH', 'OPTIONS'],

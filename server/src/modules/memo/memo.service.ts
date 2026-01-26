@@ -60,7 +60,7 @@ export class MemoService extends BaseService {
    */
   private extractFileKeysFromContent(content: any): string[] {
     const fileKeys: string[] = [];
-    
+
     if (!content || typeof content !== 'object') {
       return fileKeys;
     }
@@ -168,7 +168,16 @@ export class MemoService extends BaseService {
       ...(text !== undefined && text !== '' && { text }),
       member: { connect: { idx: memberIdx } },
     });
-    
+
+    for (let i = 0; i < 300; i++) {
+      await this.memoRepository.create({
+        title: `테스트 메모 ${i}`,
+        ...(content !== undefined && { content }),
+        ...(text !== undefined && text !== '' && { text }),
+        member: { connect: { idx: memberIdx } },
+      });
+    }
+
     // content에서 파일키 추출 후 memoIdx 업데이트
     if (content) {
       const fileKeys = this.extractFileKeysFromContent(content);
@@ -176,7 +185,7 @@ export class MemoService extends BaseService {
         await this.updateFileMemoIdx(fileKeys, memo.idx);
       }
     }
-    
+
     return memo;
   }
 

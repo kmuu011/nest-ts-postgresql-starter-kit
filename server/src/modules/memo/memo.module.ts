@@ -8,7 +8,7 @@ import { FileModule } from '../file/file.module';
   imports: [FileModule],
   controllers: [MemoController],
   providers: [MemoService, MemoRepository],
-  exports: [],
+  exports: [MemoRepository],
 })
 
 export class MemoModule { }

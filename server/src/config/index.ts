@@ -40,8 +40,10 @@ const config = {
       hashAlgorithm: envConfig.PASSWORD_HASH_ALGORITHM,
     },
     session: {
-      expireTime: 60 * 60 * 24 * 30,
-      refreshTime: 60 * 60 * 24 * 29
+      // expireTime: 60 * 60 * 24 * 30,
+      // refreshTime: 60 * 60 * 24 * 29
+      expireTime: 15,
+      refreshTime: 10
     }
   },
 

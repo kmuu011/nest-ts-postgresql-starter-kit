@@ -9,6 +9,7 @@ import { AuthGuard } from "../../guard/auth.guard";
 import { DuplicateCheckDto } from "./dto/duplicate-check.dto";
 import { SuccessResponseDto, LoginResponseDto, DuplicateCheckResponseDto } from "../../common/dto/common-response.dto";
 import { httpStatus } from "@/constants/httpStatus";
+import { ChangePasswordDto } from "./dto/change-password.dto";
 
 @ApiTags('Member')
 @Controller("member")
@@ -77,6 +78,26 @@ export class MemberController extends BaseController {
   ) {
 
     return "authCheck";
+  }
+
+  @UseGuards(AuthGuard)
+  @Post("/changePassword")
+  @HttpCode(httpStatus.OK)
+  @ApiSecurity('session-key')
+  @ApiOperation({ summary: '비밀번호 변경', description: '사용자 비밀번호 변경' })
+  @ApiResponse({ status: httpStatus.OK, description: '비밀번호 변경 성공', type: SuccessResponseDto })
+  @ApiResponse({ status: httpStatus.UNAUTHORIZED, description: '인증 실패 또는 현재 비밀번호 불일치' })
+  @ApiResponse({ status: httpStatus.BAD_REQUEST, description: '잘못된 요청' })
+  async changePassword(
+    @Body() changePasswordDto: ChangePasswordDto,
+    @Req() req: Request
+  ) {
+    await this.memberService.changePassword(
+      req.memberInfo!.idx,
+      changePasswordDto
+    );
+
+    return this.sendSuccess();
   }
 
 }

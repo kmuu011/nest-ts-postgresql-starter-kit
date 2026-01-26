@@ -40,10 +40,13 @@ export class AuthGuard implements CanActivate {
 
     req.memberInfo = memberInfo;
 
+    // keepLogin이 false인 경우 세션 갱신하지 않음
+    if (!sessionData.keepLogin) return true;
+
     // 세션 만료까지 refreshTime 보다 오래 남은경우 갱신하지 않고 return
     if ((sessionData.ttl - now) / 1000 > config.memberAuth.session.refreshTime) return true;
 
-    const newSessionKey = await this.sessionService.create(memberInfo.idx, clientInfo.userAgent);
+    const newSessionKey = await this.sessionService.create(memberInfo.idx, clientInfo.userAgent, sessionData.keepLogin);
 
     CookieUtility.setSessionKey(res, newSessionKey);
 

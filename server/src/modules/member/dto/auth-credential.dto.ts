@@ -1,5 +1,5 @@
-import { IsString, Length } from 'class-validator';
-import { ApiProperty } from '@nestjs/swagger';
+import { IsString, Length, IsBoolean, IsOptional } from 'class-validator';
+import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger';
 
 export class AuthCredentialsDto {
   @ApiProperty({
@@ -21,4 +21,13 @@ export class AuthCredentialsDto {
   @IsString()
   @Length(3, 30)
   password: string;
+
+  @ApiPropertyOptional({
+    description: '로그인 유지 여부',
+    example: false,
+    default: false
+  })
+  @IsOptional()
+  @IsBoolean()
+  keepLogin?: boolean;
 }

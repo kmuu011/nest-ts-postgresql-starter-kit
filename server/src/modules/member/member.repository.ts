@@ -22,6 +22,14 @@ export class MemberRepository {
     });
   }
 
+  async selectByUniqueWithPassword(
+    where: Prisma.MemberWhereUniqueInput,
+  ): Promise<Member | null> {
+    return this.prisma.db.member.findUnique({
+      where,
+    });
+  }
+
   async selectOne(
     where: Prisma.MemberWhereInput,
   ): Promise<Omit<Member, "password"> | null> {
