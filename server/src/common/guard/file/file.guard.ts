@@ -1,8 +1,8 @@
 import { CanActivate, ExecutionContext, Injectable } from '@nestjs/common';
 import type { Request } from 'express';
-import { Message } from 'src/utils/MessageUtility';
-import { keyDescriptionObj } from 'src/constants/keyDescriptionObj';
-import { FileRepository } from './file.repository';
+import { Message } from '../../utils/MessageUtility';
+import { keyDescriptionObj } from '../../constants/keyDescriptionObj';
+import { FileRepository } from '../../../domain/file/file.repository';
 
 @Injectable()
 export class FileGuard implements CanActivate {

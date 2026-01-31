@@ -1,12 +1,12 @@
 import { Injectable } from '@nestjs/common';
 import { MemoRepository } from './memo.repository';
-import { BaseService } from 'src/common/base/base.service';
-import { PaginatedServiceData } from 'src/types/common';
-import { Message } from 'src/utils/MessageUtility';
-import { keyDescriptionObj } from 'src/constants/keyDescriptionObj';
-import { SaveMemoDto } from './dto/saveMemo.dto';
-import { FileService } from '../file/file.service';
-import { FileRepository } from '../file/file.repository';
+import { BaseService } from '@/common/base/base.service';
+import { PaginatedServiceData } from '@/common/types/common';
+import { Message } from '@/common/utils/MessageUtility';
+import { keyDescriptionObj } from '@/common/constants/keyDescriptionObj';
+import { SaveMemoDto } from '@/modules/memo/dto/saveMemo.dto';
+import { FileService } from '@/domain/file/file.service';
+import { FileRepository } from '@/domain/file/file.repository';
 import { Memo } from '@prisma/client';
 
 @Injectable()
@@ -169,15 +169,6 @@ export class MemoService extends BaseService {
       member: { connect: { idx: memberIdx } },
     });
 
-    for (let i = 0; i < 300; i++) {
-      await this.memoRepository.create({
-        title: `테스트 메모 ${i}`,
-        ...(content !== undefined && { content }),
-        ...(text !== undefined && text !== '' && { text }),
-        member: { connect: { idx: memberIdx } },
-      });
-    }
-
     // content에서 파일키 추출 후 memoIdx 업데이트
     if (content) {
       const fileKeys = this.extractFileKeysFromContent(content);
@@ -241,4 +232,3 @@ export class MemoService extends BaseService {
     return true;
   }
 }
-

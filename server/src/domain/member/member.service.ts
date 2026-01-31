@@ -1,20 +1,19 @@
 import { Injectable } from "@nestjs/common";
 import { MemberRepository } from "./member.repository";
-import { SignupDto } from "./dto/signup.dto";
-import { Message } from "../../utils/MessageUtility";
-import { keyDescriptionObj } from "../../constants/keyDescriptionObj";
-import { DuplicateCheckKey } from "./member.type";
-import { EncryptUtility } from "../../utils/EncryptUtility";
-import { LoginDto } from "./dto/login.dto";
+import { SignupDto } from '@/modules/member/dto/signup.dto';
+import { Message } from "@/common/utils/MessageUtility";
+import { keyDescriptionObj } from "@/common/constants/keyDescriptionObj";
+import { DuplicateCheckKey } from '@/modules/member/member.type';
+import { EncryptUtility } from "@/common/utils/EncryptUtility";
+import { LoginDto } from '@/modules/member/dto/login.dto';
 import { Member } from "@prisma/client";
-import { Utility } from "../../utils/Utility";
+import { Utility } from '@/common/utils/Utility';
 import type { Request, Response } from "express";
-import { SessionService } from "../../common/session/session.service";
-import { CookieUtility } from "../../utils/CookieUtility";
-import { Transactional } from "../../common/prisma/transactional.decorator";
-import { PrismaService } from "../../common/prisma/prisma.service";
-import { ChangePasswordDto } from "./dto/change-password.dto";
 import { MemoRepository } from "../memo/memo.repository";
+import { SessionService } from "@/common/session/session.service";
+import { CookieUtility } from "@/common/utils/CookieUtility";
+import { Transactional } from "@/common/prisma/transactional.decorator";
+import { PrismaService } from "@/common/prisma/prisma.service";
 
 @Injectable()
 export class MemberService {

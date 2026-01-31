@@ -1,13 +1,13 @@
 import { Injectable } from '@nestjs/common';
 import { FileRepository } from './file.repository';
 import { File } from '@prisma/client';
-import { BaseService } from 'src/common/base/base.service';
-import { PaginatedServiceData } from 'src/types/common';
-import { Message } from 'src/utils/MessageUtility';
-import { keyDescriptionObj } from 'src/constants/keyDescriptionObj';
-import { PrismaService } from 'src/common/prisma/prisma.service';
-import { FileUtility } from 'src/utils/FileUtility';
-import { UploadedFile } from './file.interface';
+import { BaseService } from '@/common/base/base.service';
+import { PaginatedServiceData } from '@/common/types/common';
+import { Message } from '@/common/utils/MessageUtility';
+import { keyDescriptionObj } from 'src/common/constants/keyDescriptionObj';
+import { PrismaService } from '@/common/prisma/prisma.service';
+import { FileUtility } from '@/common/utils/FileUtility';
+import { UploadedFile } from '@/modules/file/file.type';
 
 @Injectable()
 export class FileService extends BaseService {
@@ -81,7 +81,7 @@ export class FileService extends BaseService {
         file.originalname,
         file.mimetype
       );
-      
+
       // FileCategory 결정
       const fileCategory = FileUtility.determineFileCategory(fileMimeType, fileType);
 

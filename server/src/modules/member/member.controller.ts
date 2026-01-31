@@ -1,15 +1,15 @@
 import { Body, Controller, Get, HttpCode, Post, Query, Req, Res, UseGuards } from "@nestjs/common";
 import { ApiTags, ApiOperation, ApiResponse, ApiSecurity } from "@nestjs/swagger";
-import { MemberService } from "./member.service";
+import { MemberService } from '@/domain/member/member.service';
 import { LoginDto } from "./dto/login.dto";
 import { SignupDto } from "./dto/signup.dto";
-import { BaseController } from "../../common/base/base.controller";
+import { BaseController } from '@/common/base/base.controller';
 import type { Request, Response } from "express";
-import { AuthGuard } from "../../guard/auth.guard";
+import { AuthGuard } from '@/common/guard/auth/auth.guard';
 import { DuplicateCheckDto } from "./dto/duplicate-check.dto";
-import { SuccessResponseDto, LoginResponseDto, DuplicateCheckResponseDto } from "../../common/dto/common-response.dto";
-import { httpStatus } from "@/constants/httpStatus";
 import { ChangePasswordDto } from "./dto/change-password.dto";
+import { SuccessResponseDto, LoginResponseDto, DuplicateCheckResponseDto } from '@/common/dto/common/common-response.dto';
+import { httpStatus } from "@/common/constants/httpStatus";
 
 @ApiTags('Member')
 @Controller("member")

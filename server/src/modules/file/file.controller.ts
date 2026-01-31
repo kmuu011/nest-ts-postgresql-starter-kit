@@ -1,20 +1,20 @@
 import { Controller, Delete, Get, HttpCode, Post, Query, Req, Res, UploadedFiles, UseGuards, UseInterceptors } from '@nestjs/common';
 import { FilesInterceptor } from '@nestjs/platform-express';
 import { ApiTags, ApiOperation, ApiResponse, ApiSecurity, ApiParam, ApiConsumes, ApiBody } from '@nestjs/swagger';
-import { AuthGuard } from 'src/guard/auth.guard';
-import { BaseController } from 'src/common/base/base.controller';
-import { FileService } from './file.service';
+import { AuthGuard } from '@/common/guard/auth/auth.guard';
+import { BaseController } from '@/common/base/base.controller';
+import { FileService } from '@/domain/file/file.service';
 import type { Request, Response } from 'express';
-import { FileGuard } from './file.guard';
-import { config } from 'src/config';
+import { FileGuard } from '@/common/guard/file/file.guard';
+import { config } from '@/config';
 import * as path from 'path';
 import * as fs from 'fs';
-import { Message } from 'src/utils/MessageUtility';
-import { keyDescriptionObj } from 'src/constants/keyDescriptionObj';
-import { PaginationQueryDto } from 'src/common/dto/pagination-query.dto';
-import { UploadedFile } from './file.interface';
-import { SESSION_KEY } from 'src/constants/session';
-import { httpStatus } from '@/constants/httpStatus';
+import { Message } from '@/common/utils/MessageUtility';
+import { keyDescriptionObj } from '@/common/constants/keyDescriptionObj';
+import { PaginationQueryDto } from '@/common/dto/common/pagination-query.dto';
+import { UploadedFile } from './file.type';
+import { SESSION_KEY } from '@/common/constants/session';
+import { httpStatus } from '@/common/constants/httpStatus';
 
 @ApiTags('File')
 @ApiSecurity(SESSION_KEY)

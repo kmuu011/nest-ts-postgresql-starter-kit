@@ -7,7 +7,7 @@ import { config } from "./config";
 import { MemoModule } from './modules/memo/memo.module';
 import { FileModule } from './modules/file/file.module';
 import { SessionService } from './common/session/session.service';
-import { MemberRepository } from './modules/member/member.repository';
+import { MemberRepository } from './domain/member/member.repository';
 import { PrismaService } from "./common/prisma/prisma.service";
 import { LoggerMiddleware } from './common/middleware/logger.middleware';
 

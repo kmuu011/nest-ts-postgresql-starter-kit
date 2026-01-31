@@ -1,5 +1,5 @@
 import { SESSION_KEY } from "../constants/session";
-import { config } from "../config";
+import { config } from "../../config";
 import type { Response } from "express";
 
 export class CookieUtility {

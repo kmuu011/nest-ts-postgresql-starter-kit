@@ -1,8 +1,8 @@
 import { CanActivate, ExecutionContext, Injectable } from '@nestjs/common';
 import type { Request } from 'express';
-import { Message } from 'src/utils/MessageUtility';
-import { keyDescriptionObj } from 'src/constants/keyDescriptionObj';
-import { MemoRepository } from './memo.repository';
+import { Message } from '../../utils/MessageUtility';
+import { keyDescriptionObj } from '../../constants/keyDescriptionObj';
+import { MemoRepository } from '../../../domain/memo/memo.repository';
 
 @Injectable()
 export class MemoGuard implements CanActivate {

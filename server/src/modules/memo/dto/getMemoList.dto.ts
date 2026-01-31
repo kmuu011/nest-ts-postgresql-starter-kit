@@ -1,6 +1,6 @@
 import { IsOptional, IsIn } from 'class-validator';
 import { ApiPropertyOptional } from '@nestjs/swagger';
-import { PaginationQueryDto } from 'src/common/dto/pagination-query.dto';
+import { PaginationQueryDto } from '@/common/dto/common/pagination-query.dto';
 
 export class GetMemoListDto extends PaginationQueryDto {
   @ApiPropertyOptional({

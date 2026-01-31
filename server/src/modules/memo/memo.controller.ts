@@ -1,14 +1,14 @@
 import { Body, Controller, Delete, Get, HttpCode, Patch, Post, Query, Req, UseGuards } from '@nestjs/common';
 import { ApiTags, ApiOperation, ApiResponse, ApiSecurity, ApiParam } from '@nestjs/swagger';
-import { AuthGuard } from 'src/guard/auth.guard';
+import { AuthGuard } from '@/common/guard/auth/auth.guard';
 import { SaveMemoDto } from './dto/saveMemo.dto';
-import { BaseController } from 'src/common/base/base.controller';
-import { MemoService } from './memo.service';
+import { BaseController } from '@/common/base/base.controller';
+import { MemoService } from '@/domain/memo/memo.service';
 import type { Request } from 'express';
-import { MemoGuard } from './memo.guard';
+import { MemoGuard } from '@/common/guard/memo/memo.guard';
 import { GetMemoListDto } from './dto/getMemoList.dto';
-import { SESSION_KEY } from 'src/constants/session';
-import { httpStatus } from '@/constants/httpStatus';
+import { SESSION_KEY } from '@/common/constants/session';
+import { httpStatus } from '@/common/constants/httpStatus';
 
 @ApiTags('Memo')
 @ApiSecurity(SESSION_KEY)

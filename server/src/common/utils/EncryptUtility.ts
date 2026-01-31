@@ -1,5 +1,5 @@
 import { createHash } from "node:crypto";
-import { config } from "../config";
+import { config } from "../../config";
 
 export class EncryptUtility {
   static encryptMemberPassword(password: string): string {

@@ -4,7 +4,7 @@ import * as path from 'path';
 import { config } from 'src/config';
 import { KeyUtility } from './KeyUtility';
 import { PrismaService } from 'src/common/prisma/prisma.service';
-import { UploadedFile } from 'src/modules/file/file.interface';
+import { UploadedFile } from 'src/modules/file/file.type';
 
 export class FileUtility {
   /**

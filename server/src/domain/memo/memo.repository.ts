@@ -1,7 +1,6 @@
 import { Injectable } from "@nestjs/common";
-import { PrismaService } from "../../common/prisma/prisma.service";
+import { PrismaService } from "@/common/prisma/prisma.service";
 import { Memo, Prisma } from "@prisma/client";
-import { PgroongaUtility } from "../../utils/PgroongaUtility";
 
 @Injectable()
 export class MemoRepository {

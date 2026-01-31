@@ -1,7 +1,7 @@
 import { Module } from '@nestjs/common';
-import { FileService } from './file.service';
+import { FileService } from '@/domain/file/file.service';
 import { FileController } from './file.controller';
-import { FileRepository } from './file.repository';
+import { FileRepository } from '@/domain/file/file.repository';
 
 @Module({
   controllers: [FileController],

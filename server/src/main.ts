@@ -5,7 +5,7 @@ import { ValidationPipe } from "@nestjs/common";
 import cookieParser from "cookie-parser";
 import { OutOfControlExceptionFilter } from './common/filter/exception.filter';
 import { ControllableExceptionFilter } from './common/filter/exception.filter';
-import { NEW_SESSION_KEY, SESSION_KEY } from './constants/session';
+import { NEW_SESSION_KEY, SESSION_KEY } from './common/constants/session';
 import { NestExpressApplication } from '@nestjs/platform-express';
 import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
 import express from 'express';
@@ -27,6 +27,8 @@ async function bootstrap() {
       'http://localhost:3000',
       'http://192.168.0.75:3000',
       'http://192.168.0.74:3000',
+      'http://192.168.0.75:8200',
+      'http://192.168.0.74:8200',
       'http://192.168.0.75:8100',
       'http://192.168.0.74:8100',
     ],

@@ -1,4 +1,4 @@
-import { PaginatedServiceData } from "src/types/common";
+import { PaginatedServiceData } from "../types/common";
 
 export abstract class BaseService {
   protected returnListType<T>(

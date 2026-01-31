@@ -1,7 +1,7 @@
 import { Module } from '@nestjs/common';
-import { MemoService } from './memo.service';
+import { MemoService } from '@/domain/memo/memo.service';
 import { MemoController } from './memo.controller';
-import { MemoRepository } from './memo.repository';
+import { MemoRepository } from '@/domain/memo/memo.repository';
 import { FileModule } from '../file/file.module';
 
 @Module({
