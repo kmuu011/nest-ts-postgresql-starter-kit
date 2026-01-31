@@ -14,13 +14,13 @@ import { SessionService } from "@/common/session/session.service";
 import { CookieUtility } from "@/common/utils/CookieUtility";
 import { Transactional } from "@/common/prisma/transactional.decorator";
 import { PrismaService } from "@/common/prisma/prisma.service";
+import { ChangePasswordDto } from "@/modules/member/dto/change-password.dto";
 
 @Injectable()
 export class MemberService {
   constructor(
     private readonly memberRepository: MemberRepository,
     private readonly sessionService: SessionService,
-    private readonly prisma: PrismaService,
     private readonly memoRepository: MemoRepository,
   ) {
   }
